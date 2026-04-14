@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AgentMarket
 
-## Getting Started
+Compute-routed agent marketplace. An orchestrator decomposes a goal, classifies each subtask by complexity, routes each to the cheapest Claude model that can do it well (Haiku / Sonnet / Opus), hires an agent from the marketplace, executes, and shows live savings vs a naive all-Opus baseline.
 
-First, run the development server:
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+cp .env.local.example .env.local   # set ANTHROPIC_API_KEY
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/` — marketplace feed with 8 fixture agents sorted by quality
+- `/orchestrate` — live orchestration dashboard, SSE-streamed
+- `/agents/[id]` — agent detail with per-tier token metrics and pricing
+- `/register` — register any GitHub repo as an agent
 
-## Learn More
+## API
 
-To learn more about Next.js, take a look at the following resources:
+- `GET /api/agents` — list agents sorted by quality desc
+- `GET /api/agents/[id]` — agent detail
+- `POST /api/classify` — `{description}` → `{tier, reason, estimated_tokens}`
+- `POST /api/orchestrate` — `{goal}` → SSE stream: `run_created`, `decomposed`, `classified`, `agent_assigned`, `task_started`, `task_completed`, `run_completed`
+- `POST /api/register` — `{github_url}` → agent record (reads `skills.md`, `memory/metrics.json`, 90d commits)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Demo goal
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> Launch a new SaaS product: design the pricing tier architecture, write the landing page headline and hero copy, and format a 5-question FAQ section from these raw notes.
 
-## Deploy on Vercel
+Produces Opus (pricing) + Sonnet (landing) + Haiku (FAQ) → live savings panel.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deploy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+vercel --prod
+```
+
+Set `ANTHROPIC_API_KEY` (required) and optionally `GITHUB_TOKEN` in the Vercel project.
+
+## Architecture
+
+```
+goal ──▶ orchestrator (Sonnet, tool_use) ──▶ 3-5 subtasks
+                                                  │
+           per subtask:                           ▼
+             classifier (Haiku, JSON) ──▶ tier (simple|moderate|complex)
+             router ──▶ model + agent
+             subagent executor ──▶ result
+                                                  │
+                                                  ▼
+                                          pricing engine + savings panel
+```
