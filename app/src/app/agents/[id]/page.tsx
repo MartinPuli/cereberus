@@ -7,89 +7,117 @@ import { MODEL_RATES, taskPriceEth } from "@/lib/pricing";
 
 export const dynamic = "force-dynamic";
 
-export default async function AgentDetail({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+const TIER_COLOR: Record<string, string> = {
+  simple:   "var(--tier-haiku)",
+  moderate: "var(--tier-sonnet)",
+  complex:  "var(--tier-opus)",
+};
+const TIER_BG: Record<string, string> = {
+  simple:   "var(--tier-haiku-bg)",
+  moderate: "var(--tier-sonnet-bg)",
+  complex:  "var(--tier-opus-bg)",
+};
+
+export default async function AgentDetail({ params }: { params: Promise<{ id: string }> }) {
   ensureSeeded();
-  const { id } = await params;
-  const agent = getAgent(id);
+  const { id }   = await params;
+  const agent    = getAgent(id);
   if (!agent) notFound();
 
-  const tiers: Array<"simple" | "moderate" | "complex"> = [
-    "simple",
-    "moderate",
-    "complex",
-  ];
-  const sourceLabel = agent.source === "github" ? "GitHub-backed agent" : "Fixture agent";
+  const tiers = ["simple", "moderate", "complex"] as const;
+  const isGitHub = agent.source === "github";
   const completionRate =
     agent.metrics.tasks_attempted > 0
       ? (agent.metrics.tasks_completed / agent.metrics.tasks_attempted) * 100
       : agent.metrics.success_rate * 100;
+  const tierColor = TIER_COLOR[agent.default_tier] ?? "var(--accent)";
 
   return (
-    <div className="flex flex-col gap-6">
-      <Link href="/" className="text-sm text-[var(--text-dim)] hover:text-white">
-        ← back to marketplace
+    <div style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
+
+      {/* Back */}
+      <Link href="/" style={{ fontSize: "0.875rem", color: "var(--text-muted)", textDecoration: "none" }}>
+        ← Marketplace
       </Link>
-      <header className="flex items-start justify-between gap-4">
-        <div>
-          <div className="text-xs uppercase tracking-wider text-[var(--accent)] mb-2">
-            {sourceLabel}
-          </div>
-          <h1 className="text-3xl font-bold">{agent.name}</h1>
-          <div className="text-sm text-[var(--text-dim)]">{agent.handle}</div>
-          {agent.github_url && (
-            <a
-              href={agent.github_url}
-              target="_blank"
-              rel="noreferrer"
-              className="text-xs text-[var(--accent)] hover:underline"
+
+      {/* Header */}
+      <header
+        className="card"
+        style={{ padding: "28px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "20px", flexWrap: "wrap", overflow: "hidden", position: "relative" }}
+      >
+        {/* Tier color glow */}
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: tierColor }} />
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span
+              style={{
+                fontSize: "0.625rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em",
+                color: "var(--accent)", background: "var(--accent-soft)",
+                border: "1px solid rgba(107,92,231,0.2)", padding: "3px 10px", borderRadius: "999px",
+              }}
             >
-              {agent.github_url}
-            </a>
-          )}
+              {isGitHub ? "GitHub-backed" : "Fixture"}
+            </span>
+            {agent.github_url && (
+              <a
+                href={agent.github_url}
+                target="_blank"
+                rel="noreferrer"
+                style={{ fontSize: "0.75rem", color: "var(--accent)", textDecoration: "none", fontFamily: "JetBrains Mono, monospace" }}
+              >
+                {agent.github_url.replace("https://github.com/", "")} ↗
+              </a>
+            )}
+          </div>
+          <h1 className="font-display" style={{ fontSize: "2.5rem", color: "var(--text)", margin: 0, lineHeight: 1.05, letterSpacing: "0.01em" }}>
+            {agent.name}
+          </h1>
+          <div style={{ fontSize: "0.875rem", color: "var(--text-muted)", fontFamily: "JetBrains Mono, monospace" }}>
+            {agent.handle}
+          </div>
         </div>
         <TierBadge tier={agent.default_tier} size="md" />
       </header>
 
-      <p className="text-[var(--text-dim)]">{agent.description}</p>
+      {/* Description */}
+      <p style={{ color: "var(--text-dim)", lineHeight: 1.7, fontSize: "0.9375rem", margin: 0, maxWidth: "600px" }}>
+        {agent.description}
+      </p>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="card p-4 flex flex-col gap-2">
-          <div className="text-xs uppercase tracking-wider text-[var(--text-dim)]">
-            Source
+      {/* Stats row */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: "Success rate",    value: `${(agent.metrics.success_rate * 100).toFixed(0)}%`,              color: "var(--savings)" },
+          { label: "Completion rate", value: `${completionRate.toFixed(0)}%`,                                  color: "var(--text)" },
+          { label: "Commits 90d",     value: String(agent.commits_90d),                                        color: "var(--tier-sonnet)" },
+          { label: "Quality",         value: agent.quality.toFixed(2),                                         color: tierColor },
+        ].map(({ label, value, color }) => (
+          <div key={label} className="card" style={{ padding: "16px 18px" }}>
+            <div style={{ fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", marginBottom: "6px" }}>
+              {label}
+            </div>
+            <div className="font-display" style={{ fontSize: "1.75rem", color, lineHeight: 1 }}>
+              {value}
+            </div>
           </div>
-          <div className="font-semibold">{sourceLabel}</div>
-          <div className="text-sm text-[var(--text-dim)]">
-            {agent.source === "github"
-              ? "Imported from a live GitHub repository with repo activity and metrics signals."
-              : "Curated fixture data used to seed the marketplace and demo flows."}
-          </div>
-        </div>
-        <div className="card p-4 flex flex-col gap-2">
-          <div className="text-xs uppercase tracking-wider text-[var(--text-dim)]">
-            Throughput
-          </div>
-          <div className="font-semibold">
-            {agent.metrics.tasks_completed.toLocaleString()} completed / {agent.metrics.tasks_attempted.toLocaleString()} attempted
-          </div>
-          <div className="text-sm text-[var(--text-dim)]">
-            Effective completion rate {completionRate.toFixed(0)}%
-          </div>
-        </div>
-      </section>
+        ))}
+      </div>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-xs uppercase tracking-wider text-[var(--text-dim)]">
+      {/* Skills */}
+      <section style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <h2 style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--text-muted)", margin: 0 }}>
           Skills
         </h2>
-        <div className="flex flex-wrap gap-2">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
           {agent.skills.map((s) => (
             <span
               key={s}
-              className="text-xs bg-[var(--bg-elev2)] border border-[var(--border)] rounded px-2 py-1"
+              style={{
+                fontSize: "0.75rem", background: "var(--bg-elev2)",
+                border: "1px solid var(--border)", borderRadius: "6px",
+                padding: "4px 10px", color: "var(--text-dim)",
+                fontFamily: "JetBrains Mono, monospace",
+              }}
             >
               {s.replace(/_/g, " ")}
             </span>
@@ -97,51 +125,76 @@ export default async function AgentDetail({
         </div>
       </section>
 
-      <section className="grid grid-cols-3 gap-4">
-        {tiers.map((tier) => {
-          const avg = agent.metrics.avg_tokens_per_task[tier];
-          if (!avg) return null;
-          const model = tier === "simple" ? "haiku" : tier === "moderate" ? "sonnet" : "opus";
-          const price = taskPriceEth(model, avg, agent.quality);
-          return (
-            <div key={tier} className="card p-4 flex flex-col gap-2">
-              <TierBadge tier={tier} />
-              <div className="text-xs text-[var(--text-dim)]">Avg tokens</div>
-              <div className="font-mono text-lg">{avg.toLocaleString()}</div>
-              <div className="text-xs text-[var(--text-dim)] pt-2 border-t border-[var(--border)]">
-                Est. price / task
+      {/* Pricing by tier */}
+      <section style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <h2 style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--text-muted)", margin: 0 }}>
+          Pricing by tier
+        </h2>
+        <div className="grid grid-cols-3 gap-4">
+          {tiers.map((tier) => {
+            const avg   = agent.metrics.avg_tokens_per_task[tier];
+            if (!avg) return null;
+            const model = tier === "simple" ? "haiku" : tier === "moderate" ? "sonnet" : "opus";
+            const price = taskPriceEth(model, avg, agent.quality);
+            const tc    = TIER_COLOR[tier];
+            const tbg   = TIER_BG[tier];
+            return (
+              <div
+                key={tier}
+                className="card"
+                style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "10px", borderTop: `2.5px solid ${tc}` }}
+              >
+                <TierBadge tier={tier} />
+                <div>
+                  <div style={{ fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", marginBottom: "4px" }}>
+                    Avg tokens
+                  </div>
+                  <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "1.125rem", fontWeight: 700, color: "var(--text)" }}>
+                    {avg.toLocaleString()}
+                  </div>
+                </div>
+                <div style={{ borderTop: "1px solid var(--border)", paddingTop: "10px" }}>
+                  <div style={{ fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", marginBottom: "4px" }}>
+                    Est. / task
+                  </div>
+                  <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.9375rem", fontWeight: 700, color: tc }}>
+                    {price.toFixed(6)} ETH
+                  </div>
+                </div>
               </div>
-              <div className="font-mono text-sm">{price.toFixed(6)} ETH</div>
-            </div>
-          );
-        })}
-      </section>
-
-      <section className="grid grid-cols-3 gap-4">
-        <div className="card p-4">
-          <div className="text-xs text-[var(--text-dim)]">Success rate</div>
-          <div className="font-mono text-2xl">
-            {(agent.metrics.success_rate * 100).toFixed(0)}%
-          </div>
-        </div>
-        <div className="card p-4">
-          <div className="text-xs text-[var(--text-dim)]">Commits 90d</div>
-          <div className="font-mono text-2xl">{agent.commits_90d}</div>
-          <div className="text-xs text-[var(--text-dim)] mt-1">
-            Maintenance signal from source repo
-          </div>
-        </div>
-        <div className="card p-4">
-          <div className="text-xs text-[var(--text-dim)]">Quality score</div>
-          <div className="font-mono text-2xl">{agent.quality.toFixed(2)}</div>
+            );
+          })}
         </div>
       </section>
 
-      <section className="text-xs text-[var(--text-dim)] border-t border-[var(--border)] pt-4">
-        Base rates — Haiku {MODEL_RATES.haiku.toFixed(8)} ETH/token · Sonnet{" "}
-        {MODEL_RATES.sonnet.toFixed(8)} ETH/token · Opus{" "}
-        {MODEL_RATES.opus.toFixed(8)} ETH/token
-      </section>
+      {/* Source info */}
+      <div
+        className="card"
+        style={{ padding: "16px 20px", display: "flex", gap: "16px", alignItems: "flex-start", background: isGitHub ? "var(--tier-haiku-bg)" : "var(--bg-elev)", borderColor: isGitHub ? "var(--tier-haiku-border)" : "var(--border)" }}
+      >
+        <span style={{ fontSize: "1.25rem", lineHeight: 1, flexShrink: 0 }}>{isGitHub ? "🔗" : "🧪"}</span>
+        <div>
+          <div style={{ fontWeight: 600, fontSize: "0.875rem", color: isGitHub ? "var(--tier-haiku)" : "var(--text)", marginBottom: "4px" }}>
+            {isGitHub ? "GitHub-backed agent" : "Fixture agent"}
+          </div>
+          <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", lineHeight: 1.55 }}>
+            {isGitHub
+              ? "Imported from a live GitHub repository. Metrics reflect real commit activity and repository signals."
+              : "Curated fixture used to seed the marketplace and demo compute routing flows."}
+          </div>
+          <div style={{ marginTop: "10px", fontSize: "0.6875rem", color: "var(--text-muted)", fontFamily: "JetBrains Mono, monospace" }}>
+            {agent.metrics.tasks_completed.toLocaleString()} completed / {agent.metrics.tasks_attempted.toLocaleString()} attempted
+          </div>
+        </div>
+      </div>
+
+      {/* Rate reference */}
+      <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)", borderTop: "1px solid var(--border)", paddingTop: "16px", fontFamily: "JetBrains Mono, monospace", lineHeight: 1.8 }}>
+        Base rates —{" "}
+        <span style={{ color: "var(--tier-haiku)" }}>Haiku {MODEL_RATES.haiku.toFixed(8)} ETH/token</span> ·{" "}
+        <span style={{ color: "var(--tier-sonnet)" }}>Sonnet {MODEL_RATES.sonnet.toFixed(8)} ETH/token</span> ·{" "}
+        <span style={{ color: "var(--tier-opus)" }}>Opus {MODEL_RATES.opus.toFixed(8)} ETH/token</span>
+      </div>
     </div>
   );
 }

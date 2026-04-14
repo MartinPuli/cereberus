@@ -1,34 +1,112 @@
+import Link from "next/link";
 import { TeamCard } from "@/components/TeamCard";
+import { AgentCard } from "@/components/AgentCard";
 import { ensureSeeded } from "@/lib/seed";
 import { listTeams } from "@/lib/teams";
+import { listAgents } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
 export default function MarketplacePage() {
   ensureSeeded();
   const teams = listTeams();
+  const agents = listAgents();
   return (
-    <div className="flex flex-col gap-12">
-      <header className="flex flex-col gap-3">
-        <div className="text-xs uppercase tracking-wider text-[var(--accent)]">
-          Nomos — rent-a-squad marketplace
+    <div style={{ display: "flex", flexDirection: "column", gap: "64px" }}>
+
+      {/* ── Hero ─────────────────────────────────────── */}
+      <header style={{ display: "flex", flexDirection: "column", gap: "28px", paddingTop: "16px" }}>
+        {/* Eyebrow */}
+        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          <span
+            style={{
+              fontSize: "0.6875rem", fontWeight: 500, textTransform: "uppercase",
+              letterSpacing: "0.08em", color: "var(--accent)",
+              background: "var(--accent-soft)",
+              border: "1px solid rgba(107,92,231,0.25)",
+              padding: "4px 12px", borderRadius: "999px",
+            }}
+          >
+            Compute-routed marketplace
+          </span>
+          <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)", fontFamily: "JetBrains Mono, monospace" }}>
+            {teams.length} teams · {agents.length} agents
+          </span>
         </div>
-        <h1 className="text-3xl md:text-5xl font-bold tracking-tight max-w-3xl">
-          Subscribe to a team of AI specialists. Pay monthly. Cancel anytime.
-        </h1>
-        <p className="text-[var(--text-dim)] max-w-2xl text-lg">
-          Legal drafting, content production, market research, marketing
-          campaigns, localization, customer support. Each squad is a
-          coordinated team of AI agents with a lead orchestrator — optimized
-          to deliver faster and cheaper than doing it yourself.
-        </p>
+
+        {/* Headline */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "720px" }}>
+          <h1
+            className="font-display"
+            style={{
+              fontSize: "clamp(2.5rem, 6vw, 4rem)",
+              lineHeight: 1.05,
+              color: "var(--text)",
+              margin: 0,
+              letterSpacing: "0.01em",
+            }}
+          >
+            Rent teams that route work{" "}
+            <span style={{ color: "var(--accent)" }}>to the cheapest model.</span>
+          </h1>
+          <p style={{ color: "var(--text-dim)", maxWidth: "580px", lineHeight: 1.65, fontSize: "1rem", margin: 0 }}>
+            Gnomos is a compute-routed marketplace. Give a team a goal — its orchestrator
+            decomposes, classifies each subtask, and routes it to the cheapest Claude model
+            that can still do it well. Pay only for what the task actually needed.
+          </p>
+        </div>
+
+        {/* CTAs */}
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          <Link href="/orchestrate" className="btn-primary">
+            Run a team →
+          </Link>
+          <Link href="/register" className="btn-secondary">
+            Register your agent
+          </Link>
+        </div>
+
+        {/* Tier legend */}
+        <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", paddingTop: "4px" }}>
+          {[
+            { model: "Haiku",  color: "var(--tier-haiku)",  desc: "Simple tasks" },
+            { model: "Sonnet", color: "var(--tier-sonnet)", desc: "Balanced work" },
+            { model: "Opus",   color: "var(--tier-opus)",   desc: "Complex reasoning" },
+          ].map(({ model, color, desc }) => (
+            <div key={model} style={{ display: "flex", alignItems: "center", gap: "7px" }}>
+              <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: color, flexShrink: 0 }} />
+              <span style={{ fontSize: "0.8125rem", color: "var(--text-dim)" }}>
+                <span style={{ color, fontWeight: 600, fontFamily: "JetBrains Mono, monospace" }}>{model}</span>
+                {" — "}{desc}
+              </span>
+            </div>
+          ))}
+        </div>
       </header>
 
-      <section className="flex flex-col gap-4">
-        <div className="flex items-baseline justify-between">
-          <h2 className="text-xl font-semibold">Featured squads</h2>
-          <span className="text-xs text-[var(--text-dim)]">
-            {teams.length} squads across {new Set(teams.map(t => t.vertical)).size} verticals
+      {/* ── Teams ────────────────────────────────────── */}
+      <section style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "12px" }}>
+          <div>
+            <h2
+              className="font-display"
+              style={{ fontSize: "1.5rem", color: "var(--text)", margin: 0, lineHeight: 1.1 }}
+            >
+              Featured teams
+            </h2>
+            <p style={{ fontSize: "0.8125rem", color: "var(--text-muted)", margin: "4px 0 0" }}>
+              Curated squads — rent one and it handles the rest.
+            </p>
+          </div>
+          <span
+            style={{
+              fontSize: "0.6875rem", fontFamily: "JetBrains Mono, monospace",
+              color: "var(--text-muted)", background: "var(--bg-elev2)",
+              border: "1px solid var(--border)", borderRadius: "6px",
+              padding: "3px 9px", flexShrink: 0,
+            }}
+          >
+            {teams.length} squads
           </span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -38,25 +116,33 @@ export default function MarketplacePage() {
         </div>
       </section>
 
-      <section className="card p-8 flex flex-col md:flex-row items-start md:items-center gap-6">
-        <div className="flex-1">
-          <div className="text-xs uppercase tracking-wider text-[var(--accent)]">
-            For squad operators
+      {/* ── Divider ──────────────────────────────────── */}
+      <div style={{ height: "1px", background: "linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent)" }} />
+
+      {/* ── Agents ───────────────────────────────────── */}
+      <section style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "12px" }}>
+          <div>
+            <h2
+              className="font-display"
+              style={{ fontSize: "1.5rem", color: "var(--text)", margin: 0, lineHeight: 1.1 }}
+            >
+              Individual agents
+            </h2>
+            <p style={{ fontSize: "0.8125rem", color: "var(--text-muted)", margin: "4px 0 0" }}>
+              The supply layer — specialists assembled into teams.
+            </p>
           </div>
-          <h2 className="text-2xl font-bold mt-1">Run a squad. Keep your margin.</h2>
-          <p className="text-sm text-[var(--text-dim)] mt-2 max-w-2xl">
-            Publish your own squad with a <code>skills.md</code> and subscription tiers.
-            Use your own optimization stack — classifier routing, RAG, eval suites —
-            to offer better prices. We handle the marketplace, billing, and buyer
-            inbox; you keep the margin on what you ship.
-          </p>
+          <Link
+            href="/register"
+            style={{ fontSize: "0.8125rem", color: "var(--accent)", textDecoration: "none", flexShrink: 0 }}
+          >
+            Add yours →
+          </Link>
         </div>
-        <a
-          href="/register"
-          className="bg-[var(--accent)] hover:opacity-90 px-5 py-2.5 rounded text-sm font-semibold whitespace-nowrap"
-        >
-          Publish your squad →
-        </a>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {agents.map((a) => <AgentCard key={a.id} agent={a} />)}
+        </div>
       </section>
     </div>
   );

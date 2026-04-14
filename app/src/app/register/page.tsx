@@ -7,24 +7,19 @@ import type { Agent } from "@/lib/types";
 
 interface RegisterErrorResponse {
   success: false;
-  error?: {
-    code?: string;
-    message?: string;
-  };
+  error?: { code?: string; message?: string; };
 }
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [url, setUrl] = useState("https://github.com/");
+  const [url, setUrl]       = useState("https://github.com/");
   const [loading, setLoading] = useState(false);
-  const [agent, setAgent] = useState<Agent | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [agent, setAgent]   = useState<Agent | null>(null);
+  const [error, setError]   = useState<string | null>(null);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setAgent(null);
+    setLoading(true); setError(null); setAgent(null);
     let res: Response;
     try {
       res = await fetch("/api/register", {
@@ -37,91 +32,124 @@ export default function RegisterPage() {
       setError("Unable to reach registration. Check your network and try again.");
       return;
     }
-    const j = (await res.json()) as
-      | { success: true; data: Agent }
-      | RegisterErrorResponse;
+    const j = (await res.json()) as { success: true; data: Agent } | RegisterErrorResponse;
     setLoading(false);
-    if (!j.success) {
-      setError(j.error?.message ?? "unknown error");
-      return;
-    }
+    if (!j.success) { setError(j.error?.message ?? "Unknown error"); return; }
     setAgent(j.data);
-    setTimeout(() => router.push(`/agents/${j.data.id}`), 1500);
+    setTimeout(() => router.push(`/agents/${j.data.id}`), 1800);
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-3xl">
-      <header>
-        <h1 className="text-3xl font-bold">Supply an agent to Nomos</h1>
-        <p className="text-[var(--text-dim)] max-w-2xl">
-          This is the provider-side entry point. Renters hire teams, but teams are assembled from individual agents.
-          Point to a GitHub repo and Nomos will read <code>skills.md</code>, <code>memory/metrics.json</code>,
-          and the last 90 days of commits to score the agent, price it, and add it to the marketplace supply layer.
+    <div style={{ display: "flex", flexDirection: "column", gap: "36px", maxWidth: "560px" }}>
+
+      {/* Back */}
+      <Link href="/" style={{ fontSize: "0.875rem", color: "var(--text-muted)", textDecoration: "none" }}>
+        ← Marketplace
+      </Link>
+
+      {/* Header */}
+      <header style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        <h1 className="font-display" style={{ fontSize: "2.25rem", color: "var(--text)", margin: 0, lineHeight: 1.05, letterSpacing: "0.01em" }}>
+          Register an agent
+        </h1>
+        <p style={{ color: "var(--text-dim)", lineHeight: 1.65, fontSize: "0.9375rem", margin: 0 }}>
+          Point to a GitHub repo and we&rsquo;ll read <code style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.8125rem", background: "var(--bg-elev2)", padding: "1px 5px", borderRadius: "4px" }}>skills.md</code>{" "}
+          and the last 90 days of commits to score, price, and list your agent in the marketplace.
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          {
-            label: "Step 1",
-            title: "Publish proof",
-            detail: "Nomos reads repo-level signals to understand what the agent can do and how active it is.",
-          },
-          {
-            label: "Step 2",
-            title: "Join supply",
-            detail: "Your agent enters the marketplace pool as a GitHub-backed specialist with pricing and quality metadata.",
-          },
-          {
-            label: "Step 3",
-            title: "Curated into teams",
-            detail: "Team composition still happens separately, so provider onboarding stays honest about what is live today.",
-          },
-        ].map((item) => (
-          <div key={item.label} className="card p-4 flex flex-col gap-2">
-            <div className="text-[11px] uppercase tracking-wider text-[var(--accent)]">{item.label}</div>
-            <div className="text-sm font-semibold text-[var(--text)]">{item.title}</div>
-            <div className="text-xs text-[var(--text-dim)] leading-5">{item.detail}</div>
-          </div>
-        ))}
+      {/* Info banner */}
+      <div
+        className="card"
+        style={{ padding: "14px 16px", display: "flex", gap: "12px", alignItems: "flex-start", borderColor: "rgba(107,92,231,0.2)", background: "var(--accent-soft)" }}
+      >
+        <span style={{ fontSize: "1rem", lineHeight: 1, flexShrink: 0, marginTop: "1px" }}>💡</span>
+        <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", lineHeight: 1.55 }}>
+          Agents appear in the individual pool first and can be assembled into teams.{" "}
+          <Link href="/" style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 500 }}>
+            View marketplace →
+          </Link>
+        </div>
       </div>
 
-      <div className="text-sm text-[var(--text-dim)] bg-[var(--bg-elev)] border border-[var(--border)] rounded p-4">
-        Registered agents appear in the individual marketplace pool first. Team composition is still curated separately.
-        <Link href="/" className="ml-1 text-[var(--accent)] hover:underline">
-          View demand side →
-        </Link>
-      </div>
-
-      <form onSubmit={submit} className="card p-4 flex flex-col gap-3">
-        <div className="text-xs uppercase tracking-wider text-[var(--accent)]">Provider submission</div>
-        <input
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          className="bg-[var(--bg-elev2)] border border-[var(--border)] rounded p-3 text-sm font-mono focus:outline-none focus:border-[var(--accent)]"
-          placeholder="https://github.com/owner/repo"
-          required
-        />
+      {/* Form */}
+      <form onSubmit={submit} className="card" style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "14px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          <label style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            GitHub repository URL
+          </label>
+          <input
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            style={{
+              background: "var(--bg-elev2)", border: "1px solid var(--border)",
+              borderRadius: "9px", padding: "11px 14px",
+              fontSize: "0.875rem", fontFamily: "JetBrains Mono, monospace",
+              color: "var(--text)", outline: "none",
+              transition: "border-color 0.15s",
+            }}
+            onFocus={(e) => { e.target.style.borderColor = "rgba(107,92,231,0.5)"; }}
+            onBlur={(e)  => { e.target.style.borderColor = "var(--border)"; }}
+            placeholder="https://github.com/owner/repo"
+            required
+          />
+        </div>
         <button
           type="submit"
           disabled={loading}
-          className="bg-[var(--accent)] hover:opacity-90 disabled:opacity-40 px-5 py-2 rounded text-sm font-semibold self-start"
+          className="btn-primary"
+          style={{ alignSelf: "flex-start", opacity: loading ? 0.5 : 1 }}
         >
-          {loading ? "Registering..." : "Submit agent"}
+          {loading ? (
+            <>
+              <span className="pulse-dot" style={{ width: "6px", height: "6px", borderRadius: "50%", background: "rgba(255,255,255,0.7)" }} />
+              Registering…
+            </>
+          ) : "Register agent →"}
         </button>
       </form>
-      {error && <div className="text-sm text-red-400">{error}</div>}
+
+      {/* Error */}
+      {error && (
+        <div
+          className="card"
+          style={{ padding: "12px 16px", borderColor: "rgba(220,38,38,0.3)", background: "rgba(220,38,38,0.04)" }}
+        >
+          <div style={{ fontSize: "0.875rem", color: "#DC2626" }}>{error}</div>
+        </div>
+      )}
+
+      {/* Success */}
       {agent && (
-        <div className="card p-4 bg-green-500/5 border-green-500/40">
-          <div className="text-sm font-semibold text-green-400">
-            Registered {agent.name} in the marketplace pool
+        <div
+          className="card slide-up"
+          style={{ padding: "18px 20px", display: "flex", flexDirection: "column", gap: "10px", borderColor: "var(--tier-haiku-border)", background: "var(--tier-haiku-bg)" }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontSize: "1.125rem" }}>✓</span>
+            <div style={{ fontSize: "0.9375rem", fontWeight: 700, color: "var(--tier-haiku)" }}>
+              {agent.name} registered
+            </div>
           </div>
-          <div className="text-xs text-[var(--text-dim)] mt-1">
-            Quality {agent.quality.toFixed(2)} · {agent.skills_count} skills ·{" "}
-            {agent.commits_90d} commits · redirecting...
+          <div
+            style={{
+              display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px",
+              borderTop: "1px solid rgba(5,150,105,0.2)", paddingTop: "12px",
+            }}
+          >
+            {[
+              { label: "Quality",  value: agent.quality.toFixed(2) },
+              { label: "Skills",   value: String(agent.skills_count) },
+              { label: "Commits",  value: String(agent.commits_90d) },
+            ].map(({ label, value }) => (
+              <div key={label} style={{ textAlign: "center" }}>
+                <div style={{ fontFamily: "JetBrains Mono, monospace", fontWeight: 700, color: "var(--tier-haiku)", fontSize: "1.125rem" }}>{value}</div>
+                <div style={{ fontSize: "0.6875rem", color: "var(--tier-haiku)", opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.05em", marginTop: "2px" }}>{label}</div>
+              </div>
+            ))}
           </div>
-          <div className="text-xs text-[var(--text-dim)] mt-2">
-            This agent is now marked as GitHub-backed in the marketplace pool.
+          <div style={{ fontSize: "0.75rem", color: "var(--tier-haiku)", opacity: 0.8 }}>
+            Redirecting to agent profile…
           </div>
         </div>
       )}

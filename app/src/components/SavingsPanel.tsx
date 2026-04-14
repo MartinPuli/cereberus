@@ -14,39 +14,39 @@ export function SavingsPanel({
   const fmt      = (n: number) => n.toFixed(6);
   const ratio    = naive > 0 ? actual / naive : 0.28;
   const savedEth = Math.max(0, naive - actual);
+  const isGood   = savedPct >= 50;
+
   return (
-    <div
-      className="card"
-      style={{ overflow: "hidden" }}
-    >
+    <div className="card" style={{ overflow: "hidden" }}>
+      {/* Top accent */}
+      <div style={{ height: "3px", background: isGood ? "var(--savings)" : "#D97706" }} />
+
       {/* Header */}
       <div
         style={{
-          padding: "14px 20px",
+          padding: "12px 20px",
           borderBottom: "1px solid var(--border)",
           display: "flex", alignItems: "center", justifyContent: "space-between",
         }}
       >
-        <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: "var(--text)" }}>
+        <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "var(--text)", letterSpacing: "-0.01em" }}>
           Cost comparison
         </span>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           {live && (
             <>
-              <span
-                className="pulse-dot"
-                style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--savings)" }}
-              />
-              <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)", fontFamily: "monospace" }}>live</span>
+              <span className="pulse-dot" style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--savings)" }} />
+              <span style={{ fontSize: "0.6875rem", color: "var(--savings)", fontFamily: "JetBrains Mono, monospace", fontWeight: 600 }}>live</span>
             </>
           )}
           {!live && savedPct > 0 && (
             <span
               style={{
-                fontSize: "0.6875rem", fontFamily: "monospace",
+                fontSize: "0.625rem", fontFamily: "JetBrains Mono, monospace", fontWeight: 600,
+                textTransform: "uppercase", letterSpacing: "0.06em",
                 background: "var(--tier-haiku-bg)", color: "var(--tier-haiku)",
-                padding: "2px 8px", borderRadius: "6px",
-                border: "1px solid rgba(5,150,105,0.2)",
+                padding: "3px 9px", borderRadius: "999px",
+                border: "1px solid var(--tier-haiku-border)",
               }}
             >
               complete
@@ -55,70 +55,94 @@ export function SavingsPanel({
         </div>
       </div>
 
-      <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "20px" }}>
-        {/* Big number */}
-        <div style={{ textAlign: "center", padding: "12px 0" }}>
+      <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
+
+        {/* Big savings number */}
+        <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+          <div style={{ flex: 1 }}>
+            <div
+              className="font-display counter-up"
+              style={{
+                fontSize: "4rem",
+                lineHeight: 1,
+                color: isGood ? "var(--savings)" : "#D97706",
+                letterSpacing: "0.01em",
+              }}
+            >
+              {savedPct.toFixed(1)}%
+            </div>
+            <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", marginTop: "6px" }}>
+              cheaper than Opus-for-everything
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "3px", fontFamily: "JetBrains Mono, monospace" }}>
+              saved {fmt(savedEth)} ETH
+            </div>
+          </div>
+
+          {/* USD callout */}
           <div
-            className="counter-up"
             style={{
-              fontSize: "3.25rem", fontWeight: 900, fontFamily: "monospace",
-              lineHeight: 1, letterSpacing: "-0.02em",
-              color: savedPct >= 50 ? "var(--savings)" : "#D97706",
+              textAlign: "right", padding: "14px 16px", borderRadius: "10px",
+              background: "var(--accent-soft)", border: "1px solid rgba(107,92,231,0.15)",
+              flexShrink: 0,
             }}
           >
-            {savedPct.toFixed(1)}%
-          </div>
-          <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", marginTop: "8px" }}>
-            cheaper than Opus-for-everything
-          </div>
-          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "4px", fontFamily: "monospace" }}>
-            saved {fmt(savedEth)} ETH
+            <div style={{ fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--accent)", marginBottom: "4px" }}>
+              10k tasks/day
+            </div>
+            <div
+              className="font-display"
+              style={{ fontSize: "1.25rem", color: "var(--accent)", lineHeight: 1 }}
+            >
+              ${((naive - actual) * 10000 * 3200).toFixed(0)}
+            </div>
+            <div style={{ fontSize: "0.6875rem", color: "var(--accent)", opacity: 0.7, marginTop: "2px" }}>saved/day</div>
           </div>
         </div>
 
         {/* Bar comparison */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          {/* Naive bar */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+
+          {/* Naive */}
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "var(--text-dim)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "7px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "7px" }}>
                 <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "rgba(220,38,38,0.5)", flexShrink: 0 }} />
-                Naive — all Opus
+                <span style={{ fontSize: "0.75rem", color: "var(--text-dim)" }}>Naive — all Opus</span>
               </div>
-              <span style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "var(--text-dim)" }}>{fmt(naive)} ETH</span>
+              <div style={{ textAlign: "right" }}>
+                <span style={{ fontSize: "0.75rem", fontFamily: "JetBrains Mono, monospace", color: "var(--text-dim)" }}>{fmt(naive)} ETH</span>
+                <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)", marginLeft: "6px" }}>(${ethToUsd(naive).toFixed(3)})</span>
+              </div>
             </div>
-            <div style={{ height: "5px", background: "var(--bg-elev2)", borderRadius: "3px" }}>
+            <div style={{ height: "6px", background: "var(--bg-elev2)", borderRadius: "3px" }}>
               <div style={{ height: "100%", borderRadius: "3px", background: "rgba(220,38,38,0.3)", width: "100%" }} />
             </div>
           </div>
 
-          {/* Routed bar */}
+          {/* Routed */}
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "var(--text-dim)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "7px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "7px" }}>
                 <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--savings)", flexShrink: 0 }} />
-                Routed — Nomos
+                <span style={{ fontSize: "0.75rem", color: "var(--text-dim)" }}>Routed — Gnomos</span>
               </div>
-              <span style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "var(--savings)", fontWeight: 600 }}>{fmt(actual)} ETH</span>
+              <div style={{ textAlign: "right" }}>
+                <span style={{ fontSize: "0.75rem", fontFamily: "JetBrains Mono, monospace", color: "var(--savings)", fontWeight: 700 }}>{fmt(actual)} ETH</span>
+                <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)", marginLeft: "6px" }}>(${ethToUsd(actual).toFixed(3)})</span>
+              </div>
             </div>
-            <div style={{ height: "5px", background: "var(--bg-elev2)", borderRadius: "3px", overflow: "hidden" }}>
-              <div style={{ height: "100%", borderRadius: "3px", background: "var(--savings)", width: `${ratio * 100}%`, transition: "width 1s ease" }} />
+            <div style={{ height: "6px", background: "var(--bg-elev2)", borderRadius: "3px", overflow: "hidden" }}>
+              <div
+                style={{
+                  height: "100%", borderRadius: "3px",
+                  background: "linear-gradient(to right, var(--tier-haiku), var(--savings))",
+                  width: `${ratio * 100}%`,
+                  transition: "width 1.2s cubic-bezier(0.16,1,0.3,1)",
+                }}
+              />
             </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div
-          style={{
-            background: "var(--accent-soft)", border: "1px solid rgba(107,92,231,0.15)",
-            borderRadius: "8px", padding: "10px 14px",
-            fontSize: "0.75rem", color: "var(--accent)",
-          }}
-        >
-          At 10k tasks/day, Nomos saves{" "}
-          <span style={{ fontFamily: "monospace", fontWeight: 600 }}>
-            ${((naive - actual) * 10000 * 3200).toFixed(0)}/day
-          </span>
         </div>
       </div>
     </div>

@@ -24,9 +24,7 @@ export function TierBadge({
   animated?: boolean;
 }) {
   const m: ModelId = model ?? (tier ? TIER_TO_MODEL[tier] : "sonnet");
-  const sz = size === "md"
-    ? { fontSize: "0.75rem", padding: "3px 10px" }
-    : { fontSize: "0.6875rem", padding: "2px 7px" };
+  const isMd = size === "md";
 
   return (
     <span
@@ -34,23 +32,25 @@ export function TierBadge({
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: "5px",
+        gap: isMd ? "6px" : "4px",
         borderRadius: "999px",
         border: "1px solid",
-        fontFamily: "monospace",
+        fontFamily: "JetBrains Mono, monospace",
         fontWeight: 600,
-        letterSpacing: "0.03em",
-        ...sz,
+        letterSpacing: "0.04em",
+        fontSize: isMd ? "0.75rem" : "0.625rem",
+        padding: isMd ? "4px 10px" : "2px 7px",
+        textTransform: "uppercase",
       }}
     >
       <span
-        className="pulse-dot"
+        className={animated ? "pulse-dot" : ""}
         style={{
-          width: size === "md" ? "7px" : "5px",
-          height: size === "md" ? "7px" : "5px",
+          width: isMd ? "7px" : "5px",
+          height: isMd ? "7px" : "5px",
           borderRadius: "50%",
           background: "currentColor",
-          opacity: 0.75,
+          opacity: 0.8,
           flexShrink: 0,
         }}
       />
