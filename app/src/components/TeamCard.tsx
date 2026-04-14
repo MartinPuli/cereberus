@@ -1,86 +1,68 @@
 import Link from "next/link";
 import type { Team } from "@/lib/types";
-import { teamGithubBackedCount } from "@/lib/teams";
+
+const VERTICAL_LABEL: Record<string, string> = {
+  legal: "Legal",
+  content: "Content",
+  marketing: "Marketing",
+  research: "Research",
+  localization: "Localization",
+  support: "Support",
+  operations: "Operations",
+  design: "Design",
+  data: "Data",
+  accounting: "Accounting",
+};
 
 export function TeamCard({ team }: { team: Team }) {
-  const githubBacked = teamGithubBackedCount(team);
-
+  const startingTier = team.tiers[0];
   return (
     <Link
-      href={`/teams/${team.id}`}
-      className="card card-hover"
-      style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "14px", textDecoration: "none", color: "inherit" }}
+      href={`/squads/${team.slug}`}
+      className="card card-hover p-5 flex flex-col gap-3"
     >
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
-        <div
-          style={{
-            width: "40px", height: "40px", borderRadius: "10px", flexShrink: 0,
-            background: "var(--accent-soft)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "1.375rem", lineHeight: 1,
-          }}
-        >
-          {team.cover_emoji}
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontWeight: 600, fontSize: "0.9375rem", color: "var(--text)" }}>{team.name}</div>
-          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+      <div className="flex items-start gap-3">
+        <div className="text-3xl leading-none">{team.cover_emoji}</div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[10px] uppercase tracking-wider text-[var(--accent)] bg-[var(--accent)]/10 rounded px-1.5 py-0.5">
+              {VERTICAL_LABEL[team.vertical] ?? team.vertical}
+            </span>
+            <span className="text-[10px] text-[var(--text-dim)]">
+              {team.languages.join(" · ").toUpperCase()}
+            </span>
+          </div>
+          <div className="font-semibold truncate">{team.name}</div>
+          <div className="text-xs text-[var(--text-dim)] truncate">
             {team.tagline}
           </div>
         </div>
       </div>
-
-      {/* Description */}
-      <p style={{ fontSize: "0.8125rem", color: "var(--text-dim)", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+      <p className="text-sm text-[var(--text-dim)] line-clamp-2">
         {team.description}
       </p>
-
-      {/* Tags */}
-      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-        <span
-          style={{
-            fontSize: "0.6875rem", fontWeight: 500,
-            background: "var(--accent-soft)", color: "var(--accent)",
-            padding: "2px 8px", borderRadius: "999px",
-            border: "1px solid rgba(107,92,231,0.2)",
-          }}
-        >
-          {team.specialty}
-        </span>
-        <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>
-          {team.member_ids.length} agents · {team.tasks_completed.toLocaleString()} tasks
-        </span>
+      <div className="flex items-center gap-3 text-[10px] text-[var(--text-dim)]">
+        <span>★ {team.avg_rating.toFixed(1)}</span>
+        <span>·</span>
+        <span>{team.active_subscriptions} active subs</span>
+        <span>·</span>
+        <span>{team.avg_turnaround_hours}h avg turnaround</span>
       </div>
-
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", flexWrap: "wrap" }}>
-        <span style={{ fontSize: "0.6875rem", color: "var(--text-dim)", fontFamily: "monospace" }}>
-          {githubBacked}/{team.member_ids.length} GitHub-backed specialists
-        </span>
-        <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>
-          live routing receipts
-        </span>
-      </div>
-
-      {/* Metrics */}
-      <div style={{ borderTop: "1px solid var(--border)", paddingTop: "12px", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "1.25rem", fontWeight: 700, fontFamily: "monospace", color: "var(--savings)" }}>
-            {team.avg_savings_pct.toFixed(1)}%
+      <div className="grid grid-cols-3 gap-3 pt-3 border-t border-[var(--border)]">
+        <div>
+          <div className="text-[10px] uppercase text-[var(--text-dim)]">From</div>
+          <div className="font-mono text-lg font-bold">
+            ${startingTier.monthly_price_usd}
+            <span className="text-xs text-[var(--text-dim)] font-normal">/mo</span>
           </div>
-          <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)", marginTop: "2px", textTransform: "uppercase", letterSpacing: "0.05em" }}>savings</div>
         </div>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "0.875rem", fontWeight: 600, fontFamily: "monospace", color: "var(--text)" }}>
-            {team.rent_price_eth_per_task.toFixed(4)}
-          </div>
-          <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)", marginTop: "2px" }}>ETH / task</div>
+        <div>
+          <div className="text-[10px] uppercase text-[var(--text-dim)]">SLA</div>
+          <div className="font-mono text-sm">{startingTier.sla_hours}h</div>
         </div>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "0.875rem", fontWeight: 600, fontFamily: "monospace", color: "var(--text)" }}>
-            {team.quality.toFixed(2)}
-          </div>
-          <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)", marginTop: "2px" }}>quality</div>
+        <div>
+          <div className="text-[10px] uppercase text-[var(--text-dim)]">Retention</div>
+          <div className="font-mono text-sm">{(team.retention_rate * 100).toFixed(0)}%</div>
         </div>
       </div>
     </Link>

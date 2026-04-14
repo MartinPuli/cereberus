@@ -142,5 +142,131 @@
     "skills_count": 4,
     "commits_90d": 19,
     "created_at": "2026-03-11T10:00:00Z"
+  },
+  {
+    "id": "legal-drafter",
+    "name": "Legal Drafter",
+    "handle": "@legal-drafter",
+    "description": "Drafts NDAs, service agreements, terms of service, and licensing contracts. Bilingual AR/ES/EN.",
+    "skills": ["contract_drafting", "ndas", "terms_of_service", "legal_spanish", "legal_english", "compliance_review"],
+    "default_tier": "complex",
+    "github_url": "https://github.com/fixtures/legal-drafter",
+    "metrics": {
+      "avg_tokens_per_task": { "simple": 600, "moderate": 2200, "complex": 4200 },
+      "tasks_completed": 312,
+      "tasks_attempted": 330,
+      "success_rate": 0.95
+    },
+    "skills_count": 6,
+    "commits_90d": 19,
+    "created_at": "2026-01-08T10:00:00Z"
+  },
+  {
+    "id": "compliance-checker",
+    "name": "Compliance Checker",
+    "handle": "@compliance-checker",
+    "description": "Reviews documents for GDPR, LFPDPPP, HIPAA and LATAM compliance flags. Fast, rule-driven.",
+    "skills": ["gdpr", "hipaa", "lfpdppp", "compliance_audit", "risk_flagging", "policy_review"],
+    "default_tier": "moderate",
+    "github_url": "https://github.com/fixtures/compliance-checker",
+    "metrics": {
+      "avg_tokens_per_task": { "simple": 350, "moderate": 1400, "complex": 2800 },
+      "tasks_completed": 218,
+      "tasks_attempted": 230,
+      "success_rate": 0.95
+    },
+    "skills_count": 6,
+    "commits_90d": 17,
+    "created_at": "2026-01-28T10:00:00Z"
+  },
+  {
+    "id": "market-researcher",
+    "name": "Market Researcher",
+    "handle": "@market-researcher",
+    "description": "Competitive analysis, market sizing, trend reports. Synthesizes public data into crisp memos.",
+    "skills": ["market_research", "competitive_analysis", "trend_synthesis", "tam_sam_som", "report_writing"],
+    "default_tier": "complex",
+    "github_url": "https://github.com/fixtures/market-researcher",
+    "metrics": {
+      "avg_tokens_per_task": { "simple": 400, "moderate": 1600, "complex": 3400 },
+      "tasks_completed": 156,
+      "tasks_attempted": 170,
+      "success_rate": 0.92
+    },
+    "skills_count": 5,
+    "commits_90d": 21,
+    "created_at": "2026-02-14T10:00:00Z"
+  },
+  {
+    "id": "campaign-strategist",
+    "name": "Campaign Strategist",
+    "handle": "@campaign-strategist",
+    "description": "Plans multi-channel marketing campaigns: objectives, audience, funnel, creative briefs.",
+    "skills": ["campaign_planning", "audience_segmentation", "funnel_design", "creative_briefs", "performance_marketing"],
+    "default_tier": "complex",
+    "github_url": "https://github.com/fixtures/campaign-strategist",
+    "metrics": {
+      "avg_tokens_per_task": { "simple": 380, "moderate": 1700, "complex": 3100 },
+      "tasks_completed": 174,
+      "tasks_attempted": 185,
+      "success_rate": 0.94
+    },
+    "skills_count": 5,
+    "commits_90d": 20,
+    "created_at": "2026-02-22T10:00:00Z"
+  },
+  {
+    "id": "support-agent",
+    "name": "Support Agent",
+    "handle": "@support-agent",
+    "description": "Handles L1 customer tickets: refunds, how-to, troubleshooting. Tone-matches brand voice.",
+    "skills": ["ticket_triage", "customer_communication", "refund_processing", "troubleshooting", "tone_matching"],
+    "default_tier": "simple",
+    "github_url": "https://github.com/fixtures/support-agent",
+    "metrics": {
+      "avg_tokens_per_task": { "simple": 260, "moderate": 780, "complex": 1600 },
+      "tasks_completed": 1420,
+      "tasks_attempted": 1450,
+      "success_rate": 0.98
+    },
+    "skills_count": 5,
+    "commits_90d": 38,
+    "created_at": "2026-03-02T10:00:00Z"
+  },
+  {
+    "id": "ops-analyst",
+    "name": "Ops Analyst",
+    "handle": "@ops-analyst",
+    "description": "Bookkeeping, invoice drafting, expense categorization, SOP writing for small teams.",
+    "skills": ["bookkeeping", "invoicing", "expense_categorization", "sop_writing", "financial_reporting"],
+    "default_tier": "moderate",
+    "github_url": "https://github.com/fixtures/ops-analyst",
+    "metrics": {
+      "avg_tokens_per_task": { "simple": 320, "moderate": 1200, "complex": 2600 },
+      "tasks_completed": 288,
+      "tasks_attempted": 300,
+      "success_rate": 0.96
+    },
+    "skills_count": 5,
+    "commits_90d": 22,
+    "created_at": "2026-03-06T10:00:00Z"
+  },
+  {
+    "id": "design-critic",
+    "name": "Design Critic",
+    "handle": "@design-critic",
+    "description": "Reviews landing pages, product screens, brand assets. Gives direct actionable feedback.",
+    "skills": ["design_review", "ux_heuristics", "visual_hierarchy", "brand_critique", "accessibility_audit"],
+    "default_tier": "moderate",
+    "github_url": "https://github.com/fixtures/design-critic",
+    "metrics": {
+      "avg_tokens_per_task": { "simple": 280, "moderate": 1100, "complex": 2200 },
+      "tasks_completed": 192,
+      "tasks_attempted": 210,
+      "success_rate": 0.91
+    },
+    "skills_count": 5,
+    "commits_90d": 18,
+    "created_at": "2026-03-10T10:00:00Z"
   }
 ]

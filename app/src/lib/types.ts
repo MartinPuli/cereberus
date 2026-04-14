@@ -84,4 +84,36 @@ export interface Team {
   quality: number;
   cover_emoji: string;
   created_at: string;
+  // v3 fields
+  vertical: Vertical;
+  languages: string[];
+  jurisdictions?: string[];
+  lead_agent_id: string;
+  tiers: SubscriptionTier[];
+  disclaimer?: string;
+  active_subscriptions: number;
+  avg_rating: number;
+  retention_rate: number;
+  avg_turnaround_hours: number;
+}
+
+export type Vertical =
+  | "legal"
+  | "content"
+  | "marketing"
+  | "research"
+  | "localization"
+  | "support"
+  | "operations"
+  | "design"
+  | "data"
+  | "accounting";
+
+export interface SubscriptionTier {
+  id: string;
+  name: string;
+  monthly_price_usd: number;
+  included_tasks_per_month: number | "unlimited";
+  sla_hours: number;
+  features: string[];
 }
