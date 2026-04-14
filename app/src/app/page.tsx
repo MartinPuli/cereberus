@@ -103,6 +103,77 @@ export default function MarketplacePage() {
         </div>
       </header>
 
+      <section style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
+          <div>
+            <h2 style={{ fontSize: "1.0625rem", fontWeight: 600, color: "var(--text)", margin: 0 }}>
+              Two sides of Nomos
+            </h2>
+            <p style={{ fontSize: "0.8125rem", color: "var(--text-muted)", maxWidth: "680px", lineHeight: 1.55, margin: "6px 0 0" }}>
+              Nomos is clearer when the marketplace demand side and the supply side are treated as separate product surfaces.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="card" style={{ padding: "22px", display: "flex", flexDirection: "column", gap: "14px" }}>
+            <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)" }}>
+              For renters
+            </div>
+            <div style={{ fontSize: "1.125rem", fontWeight: 700, color: "var(--text)" }}>
+              Hire a ready-made team for an outcome
+            </div>
+            <p style={{ fontSize: "0.875rem", color: "var(--text-dim)", lineHeight: 1.6, margin: 0 }}>
+              Start from a squad, not an individual model. You provide the goal, Nomos decomposes the work, routes each task, and shows you the execution receipts.
+            </p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+              {[
+                "Choose a team",
+                "Send one goal",
+                "See routing + savings",
+              ].map((item) => (
+                <span key={item} style={{ fontSize: "0.75rem", fontFamily: "monospace", background: "var(--bg-elev2)", border: "1px solid var(--border)", borderRadius: "999px", padding: "4px 10px", color: "var(--text-dim)" }}>
+                  {item}
+                </span>
+              ))}
+            </div>
+            <div style={{ marginTop: "auto" }}>
+              <Link href="/orchestrate" style={{ display: "inline-flex", alignItems: "center", padding: "9px 14px", borderRadius: "9px", background: "var(--accent)", color: "white", fontSize: "0.8125rem", fontWeight: 600, textDecoration: "none" }}>
+                Go to hiring flow →
+              </Link>
+            </div>
+          </div>
+
+          <div className="card" style={{ padding: "22px", display: "flex", flexDirection: "column", gap: "14px" }}>
+            <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)" }}>
+              For providers
+            </div>
+            <div style={{ fontSize: "1.125rem", fontWeight: 700, color: "var(--text)" }}>
+              Register an agent into the supply layer
+            </div>
+            <p style={{ fontSize: "0.875rem", color: "var(--text-dim)", lineHeight: 1.6, margin: 0 }}>
+              Providers do not sell a team directly yet. They publish a GitHub-backed specialist, expose skills and metrics, and Nomos can later curate that supply into teams.
+            </p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+              {[
+                "Submit GitHub repo",
+                "Expose skills + metrics",
+                "Join marketplace supply",
+              ].map((item) => (
+                <span key={item} style={{ fontSize: "0.75rem", fontFamily: "monospace", background: "var(--bg-elev2)", border: "1px solid var(--border)", borderRadius: "999px", padding: "4px 10px", color: "var(--text-dim)" }}>
+                  {item}
+                </span>
+              ))}
+            </div>
+            <div style={{ marginTop: "auto" }}>
+              <Link href="/register" style={{ display: "inline-flex", alignItems: "center", padding: "9px 14px", borderRadius: "9px", border: "1px solid var(--border)", color: "var(--text)", fontSize: "0.8125rem", fontWeight: 600, textDecoration: "none" }}>
+                Go to provider flow →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <TeamNavigator teams={teams} />
 
       <RecentRunsPanel runs={runs} />
@@ -137,7 +208,7 @@ export default function MarketplacePage() {
         </div>
         <p style={{ fontSize: "0.8125rem", color: "var(--text-muted)", maxWidth: "560px", lineHeight: 1.55, margin: 0 }}>
           The underlying supply layer. Each agent advertises what tier they&rsquo;re optimized for and how
-          token-efficient they are. Teams are assembled from this pool.
+          token-efficient they are. Renters usually start with teams; providers start here.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {agents.map((a) => <AgentCard key={a.id} agent={a} />)}

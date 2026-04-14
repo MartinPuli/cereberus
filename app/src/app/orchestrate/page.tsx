@@ -46,6 +46,7 @@ function OrchestrateInner() {
   const params = useSearchParams();
   const teamId = params.get("team");
   const goalParam = params.get("goal");
+  const mode = teamId ? "team" : "marketplace";
 
   const [goal, setGoal] = useState(DEFAULT_GOAL);
   const [subtasks, setSubtasks] = useState<SubTask[]>([]);
@@ -151,13 +152,69 @@ function OrchestrateInner() {
     <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
       <header style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
         <h1 style={{ fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", color: "var(--text)", margin: 0 }}>
-          Orchestrator
+          Hire execution
         </h1>
         <p style={{ color: "var(--text-dim)", maxWidth: "560px", lineHeight: 1.6, fontSize: "0.9rem", margin: 0 }}>
-          Give the orchestrator a goal. It decomposes it into subtasks, classifies each by complexity,
-          and routes each to the cheapest Claude model that can do it well.
+          Choose how you want to hire: from the open marketplace pool or from one specific team. Either way, Nomos decomposes the goal, classifies the work, and routes every task to the cheapest model that can do it well.
         </p>
       </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div
+          className="card"
+          style={{
+            padding: "18px",
+            borderColor: mode === "marketplace" ? "rgba(107,92,231,0.32)" : "var(--border)",
+            background: mode === "marketplace" ? "var(--accent-soft)" : "var(--bg-elev)",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+          }}
+        >
+          <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)" }}>
+            Marketplace mode
+          </div>
+          <div style={{ fontSize: "1rem", fontWeight: 650, color: "var(--text)" }}>
+            Hire from the full supply pool
+          </div>
+          <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", lineHeight: 1.55 }}>
+            Best when you want a flexible demo path or have not committed to one squad yet. Nomos can assemble specialists from the entire marketplace.
+          </div>
+          <div style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "var(--text-muted)" }}>
+            {agents.length} agents available right now
+          </div>
+          {mode === "team" && (
+            <Link href="/orchestrate" style={{ fontSize: "0.75rem", color: "var(--accent)", textDecoration: "none" }}>
+              Switch to marketplace mode →
+            </Link>
+          )}
+        </div>
+
+        <div
+          className="card"
+          style={{
+            padding: "18px",
+            borderColor: mode === "team" ? "rgba(107,92,231,0.32)" : "var(--border)",
+            background: mode === "team" ? "var(--accent-soft)" : "var(--bg-elev)",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+          }}
+        >
+          <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)" }}>
+            Team mode
+          </div>
+          <div style={{ fontSize: "1rem", fontWeight: 650, color: "var(--text)" }}>
+            Run one curated squad end to end
+          </div>
+          <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", lineHeight: 1.55 }}>
+            Best when you want clear accountability and a sharper product story. Team pages pre-package trust, specialty, and pricing before the run starts.
+          </div>
+          <div style={{ fontSize: "0.75rem", fontFamily: "monospace", color: team ? "var(--text)" : "var(--text-muted)" }}>
+            {team ? `${team.name} selected` : "Open any team page to enter team mode"}
+          </div>
+        </div>
+      </div>
 
       <div className="card p-4 flex flex-col gap-3">
         <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -216,6 +273,23 @@ function OrchestrateInner() {
       )}
 
       <div className="card" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
+          <div>
+            <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)" }}>
+              {mode === "team" ? "Team run" : "Marketplace run"}
+            </div>
+            <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", marginTop: "4px" }}>
+              {mode === "team"
+                ? "This run stays inside the selected squad."
+                : "This run can draw from the full marketplace supply."}
+            </div>
+          </div>
+          {mode === "marketplace" && (
+            <Link href="/" style={{ fontSize: "0.75rem", color: "var(--accent)", textDecoration: "none" }}>
+              Browse teams first →
+            </Link>
+          )}
+        </div>
         <textarea
           value={goal}
           onChange={(e) => setGoal(e.target.value)}
@@ -247,7 +321,7 @@ function OrchestrateInner() {
         </div>
         {!team && (
           <div className="text-xs text-[var(--text-dim)]">
-            Marketplace mode can hire from the full pool, but the clearest demo path starts from a specific team page.
+            Marketplace mode can hire from the full pool, but the sharpest renter narrative usually starts from a specific team page.
           </div>
         )}
       </div>

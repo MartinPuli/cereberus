@@ -76,6 +76,23 @@ export default async function TeamDetail({ params }: { params: Promise<{ id: str
         {team.description}
       </p>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="card" style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)" }}>Renter view</div>
+          <div style={{ fontSize: "0.9375rem", fontWeight: 600, color: "var(--text)" }}>Hire this squad as one product</div>
+          <div style={{ fontSize: "0.75rem", color: "var(--text-dim)", lineHeight: 1.55 }}>
+            This page packages specialty, trust, and pricing so a renter can decide quickly before starting a run.
+          </div>
+        </div>
+        <div className="card" style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)" }}>Provider view</div>
+          <div style={{ fontSize: "0.9375rem", fontWeight: 600, color: "var(--text)" }}>Supply powers the squad underneath</div>
+          <div style={{ fontSize: "0.75rem", color: "var(--text-dim)", lineHeight: 1.55 }}>
+            Each member is still an individual agent in the supply layer. Team curation is a separate layer on top of provider onboarding.
+          </div>
+        </div>
+      </div>
+
       {/* Stats grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {STATS.map(({ label, value, color }) => (
