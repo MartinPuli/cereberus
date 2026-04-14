@@ -82,12 +82,12 @@ export function SavingsPanel({
           {/* USD callout */}
           <div
             style={{
-              textAlign: "right", padding: "14px 16px", borderRadius: "10px",
-              background: "var(--accent-soft)", border: "1px solid rgba(107,92,231,0.15)",
+              textAlign: "right", padding: "14px 16px", borderRadius: "14px",
+              background: "var(--terere-soft)", border: "2px solid var(--ink)",
               flexShrink: 0,
             }}
           >
-            <div style={{ fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--accent)", marginBottom: "4px" }}>
+            <div style={{ fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.22em", color: "var(--ink)", marginBottom: "4px", fontWeight: 600 }}>
               10k tasks/day
             </div>
             <div

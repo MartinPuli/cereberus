@@ -13,7 +13,7 @@ const STATUS_LABEL: Record<SubTask["status"], string> = {
 const STATUS_STYLE: Record<SubTask["status"], { background: string; color: string }> = {
   pending:     { background: "var(--bg-elev2)",          color: "var(--text-muted)" },
   classifying: { background: "rgba(217,119,6,0.08)",     color: "#D97706"           },
-  routed:      { background: "rgba(107,92,231,0.08)",    color: "var(--accent)"     },
+  routed:      { background: "var(--blue-soft)",          color: "var(--ink)"        },
   working:     { background: "rgba(37,99,235,0.08)",     color: "var(--tier-sonnet)" },
   done:        { background: "rgba(5,150,105,0.08)",     color: "var(--tier-haiku)" },
   error:       { background: "rgba(220,38,38,0.08)",     color: "#DC2626"           },

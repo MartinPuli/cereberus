@@ -16,8 +16,8 @@ export function Nav() {
   return (
     <nav
       style={{
-        borderBottom: "1px solid var(--border)",
-        background: "rgba(250,250,249,0.88)",
+        borderBottom: "2px solid var(--ink)",
+        background: "rgba(255,246,237,0.92)",
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
         position: "sticky",

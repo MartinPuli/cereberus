@@ -1,3 +1,11 @@
+/**
+ * Decomposes a user goal into 3–5 delegable subtasks (Sonnet).
+ *
+ * Forces tool-use on `submit_subtasks` so the orchestrator never replies with
+ * prose — we get a schema-validated list of {description, skill_hint} pairs
+ * that downstream `classify` + `selectAgent` can operate on. The skill_hint is
+ * later used by the router to match specialists inside the agent pool.
+ */
 import Anthropic from "@anthropic-ai/sdk";
 import { getAnthropic } from "./anthropic";
 import { ApiError, requireTrimmedString } from "./http";

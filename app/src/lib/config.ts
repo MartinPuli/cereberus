@@ -1,3 +1,12 @@
+/**
+ * Runtime configuration for the orchestration pipeline.
+ *
+ * - `MODEL_IDS`: the concrete Claude model ids used for each tier. Update here
+ *   when bumping model versions — everything else routes via these aliases.
+ * - `MOCK_MODE`: set `MOCK_MODE=1` to block registration (fixtures only).
+ * - `parseForceRouting()`: reads `FORCE_ROUTING` (e.g. `pricing=complex,faq=simple`)
+ *   so demos can pin classifier output for known keywords without patching code.
+ */
 import type { Tier } from "./types";
 
 export const MODEL_IDS = {

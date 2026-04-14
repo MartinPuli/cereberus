@@ -1,3 +1,11 @@
+/**
+ * Runs one subtask on the routed model with a persona system prompt.
+ *
+ * The system prompt is built from the agent (name, description, skills) + the
+ * classifier's tier, which nudges verbosity. Max output tokens scale with
+ * tier (haiku 512 → opus 2048). Returns the produced text plus real token
+ * usage from the API response so pricing uses actual, not estimated, tokens.
+ */
 import Anthropic from "@anthropic-ai/sdk";
 import { getAnthropic } from "./anthropic";
 import { MODEL_IDS } from "./config";

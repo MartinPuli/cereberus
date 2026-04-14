@@ -150,11 +150,31 @@ function OrchestrateInner() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-      <header style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", color: "var(--text)", margin: 0 }}>
-          Hire execution
+      <header style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <span
+          style={{
+            fontSize: "0.6875rem",
+            textTransform: "uppercase",
+            letterSpacing: "0.28em",
+            color: "var(--ink)",
+            fontWeight: 600,
+          }}
+        >
+          § hire execution
+        </span>
+        <h1
+          className="font-display"
+          style={{
+            fontSize: "clamp(2rem, 5vw, 3rem)",
+            color: "var(--ink)",
+            margin: 0,
+            lineHeight: 0.95,
+            letterSpacing: "0.005em",
+          }}
+        >
+          Route your goal.
         </h1>
-        <p style={{ color: "var(--text-dim)", maxWidth: "560px", lineHeight: 1.6, fontSize: "0.9rem", margin: 0 }}>
+        <p style={{ color: "var(--text-dim)", maxWidth: "620px", lineHeight: 1.65, fontSize: "0.9375rem", margin: 0 }}>
           Choose how you want to hire: from the open marketplace pool or from one specific team. Either way, Nomos decomposes the goal, classifies the work, and routes every task to the cheapest model that can do it well.
         </p>
       </header>
@@ -163,28 +183,33 @@ function OrchestrateInner() {
         <div
           className="card"
           style={{
-            padding: "18px",
-            borderColor: mode === "marketplace" ? "rgba(107,92,231,0.32)" : "var(--border)",
-            background: mode === "marketplace" ? "var(--accent-soft)" : "var(--bg-elev)",
+            padding: "20px",
+            background: mode === "marketplace" ? "var(--terere-soft)" : "var(--bg-elev)",
             display: "flex",
             flexDirection: "column",
             gap: "10px",
           }}
         >
-          <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)" }}>
-            Marketplace mode
+          <div style={{ fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.24em", color: "var(--ink)", fontWeight: 600 }}>
+            01 / marketplace mode
           </div>
-          <div style={{ fontSize: "1rem", fontWeight: 650, color: "var(--text)" }}>
+          <div
+            className="font-display"
+            style={{ fontSize: "1.25rem", color: "var(--ink)", lineHeight: 1, letterSpacing: "0.005em" }}
+          >
             Hire from the full supply pool
           </div>
-          <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", lineHeight: 1.55 }}>
+          <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", lineHeight: 1.6 }}>
             Best when you want a flexible demo path or have not committed to one squad yet. Nomos can assemble specialists from the entire marketplace.
           </div>
-          <div style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "var(--text-muted)" }}>
+          <div style={{ fontSize: "0.6875rem", fontFamily: "JetBrains Mono, monospace", color: "var(--text-muted)" }}>
             {agents.length} agents available right now
           </div>
           {mode === "team" && (
-            <Link href="/orchestrate" style={{ fontSize: "0.75rem", color: "var(--accent)", textDecoration: "none" }}>
+            <Link
+              href="/orchestrate"
+              style={{ fontSize: "0.6875rem", color: "var(--ink)", textDecoration: "none", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.2em" }}
+            >
               Switch to marketplace mode →
             </Link>
           )}
@@ -193,53 +218,69 @@ function OrchestrateInner() {
         <div
           className="card"
           style={{
-            padding: "18px",
-            borderColor: mode === "team" ? "rgba(107,92,231,0.32)" : "var(--border)",
-            background: mode === "team" ? "var(--accent-soft)" : "var(--bg-elev)",
+            padding: "20px",
+            background: mode === "team" ? "var(--blue-soft)" : "var(--bg-elev)",
             display: "flex",
             flexDirection: "column",
             gap: "10px",
           }}
         >
-          <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)" }}>
-            Team mode
+          <div style={{ fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.24em", color: "var(--ink)", fontWeight: 600 }}>
+            02 / team mode
           </div>
-          <div style={{ fontSize: "1rem", fontWeight: 650, color: "var(--text)" }}>
+          <div
+            className="font-display"
+            style={{ fontSize: "1.25rem", color: "var(--ink)", lineHeight: 1, letterSpacing: "0.005em" }}
+          >
             Run one curated squad end to end
           </div>
-          <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", lineHeight: 1.55 }}>
+          <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", lineHeight: 1.6 }}>
             Best when you want clear accountability and a sharper product story. Team pages pre-package trust, specialty, and pricing before the run starts.
           </div>
-          <div style={{ fontSize: "0.75rem", fontFamily: "monospace", color: team ? "var(--text)" : "var(--text-muted)" }}>
+          <div style={{ fontSize: "0.6875rem", fontFamily: "JetBrains Mono, monospace", color: team ? "var(--ink)" : "var(--text-muted)" }}>
             {team ? `${team.name} selected` : "Open any team page to enter team mode"}
           </div>
         </div>
       </div>
 
-      <div className="card p-4 flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-4 flex-wrap">
+      <div className="card" style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "14px" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px", flexWrap: "wrap" }}>
           <div>
-            <div className="text-xs uppercase tracking-wider text-[var(--accent)]">
-              Demo presets
+            <div
+              style={{
+                fontSize: "0.625rem",
+                textTransform: "uppercase",
+                letterSpacing: "0.24em",
+                color: "var(--ink)",
+                fontWeight: 600,
+              }}
+            >
+              § demo presets
             </div>
-            <div className="text-sm text-[var(--text-dim)]">
+            <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", marginTop: "4px" }}>
               Use a mixed-complexity goal to make routing and savings obvious on screen.
             </div>
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             {DEMO_PRESETS.map((preset) => (
               <button
                 key={preset.label}
                 type="button"
                 onClick={() => setGoal(preset.value)}
-                className="px-3 py-1.5 rounded border border-[var(--border)] bg-[var(--bg-elev2)] text-xs hover:border-[var(--accent)] hover:text-white"
+                className="pill-neo"
+                style={{
+                  cursor: "pointer",
+                  fontSize: "0.625rem",
+                  padding: "4px 12px",
+                  letterSpacing: "0.14em",
+                }}
               >
                 {preset.label}
               </button>
             ))}
           </div>
         </div>
-        <div className="text-xs text-[var(--text-dim)]">
+        <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", lineHeight: 1.55 }}>
           Strongest live path: run a selected team and use the launch preset so Nomos shows Haiku, Sonnet, and Opus in one pass.
         </div>
       </div>
@@ -249,34 +290,67 @@ function OrchestrateInner() {
       {team && (
         <div
           className="card"
-          style={{ padding: "14px 16px", display: "flex", alignItems: "center", gap: "14px", borderColor: "rgba(107,92,231,0.3)" }}
+          style={{
+            padding: "14px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: "14px",
+            background: "var(--blue-soft)",
+          }}
         >
-          <div style={{ fontSize: "1.5rem", lineHeight: 1, flexShrink: 0 }}>{team.cover_emoji}</div>
+          <div
+            style={{
+              width: "42px",
+              height: "42px",
+              borderRadius: "12px",
+              border: "2px solid var(--ink)",
+              background: "var(--cream)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1.5rem",
+              lineHeight: 1,
+              flexShrink: 0,
+            }}
+          >
+            {team.cover_emoji}
+          </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)", marginBottom: "2px" }}>
-              Team selected
+            <div style={{ fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.22em", color: "var(--ink)", marginBottom: "4px", fontWeight: 600 }}>
+              team selected
             </div>
-            <div style={{ fontWeight: 600, fontSize: "0.9375rem", color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <div
+              className="font-display"
+              style={{ fontSize: "1rem", color: "var(--ink)", lineHeight: 1, letterSpacing: "0.005em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+            >
               {team.name}
             </div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "2px" }}>
+            <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)", marginTop: "4px", fontFamily: "JetBrains Mono, monospace" }}>
               {agents.length} agents · avg {team.avg_savings_pct.toFixed(1)}% savings
             </div>
           </div>
           <Link
             href={`/teams/${team.id}`}
-            style={{ fontSize: "0.75rem", color: "var(--text-muted)", textDecoration: "none", flexShrink: 0 }}
+            style={{
+              fontSize: "0.6875rem",
+              color: "var(--ink)",
+              textDecoration: "none",
+              flexShrink: 0,
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.2em",
+            }}
           >
             view team →
           </Link>
         </div>
       )}
 
-      <div className="card" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
+      <div className="card" style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "14px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
           <div>
-            <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)" }}>
-              {mode === "team" ? "Team run" : "Marketplace run"}
+            <div style={{ fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.24em", color: "var(--ink)", fontWeight: 600 }}>
+              § {mode === "team" ? "team run" : "marketplace run"}
             </div>
             <div style={{ fontSize: "0.8125rem", color: "var(--text-dim)", marginTop: "4px" }}>
               {mode === "team"
@@ -285,7 +359,17 @@ function OrchestrateInner() {
             </div>
           </div>
           {mode === "marketplace" && (
-            <Link href="/" style={{ fontSize: "0.75rem", color: "var(--accent)", textDecoration: "none" }}>
+            <Link
+              href="/"
+              style={{
+                fontSize: "0.6875rem",
+                color: "var(--ink)",
+                textDecoration: "none",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.2em",
+              }}
+            >
               Browse teams first →
             </Link>
           )}
@@ -294,33 +378,35 @@ function OrchestrateInner() {
           value={goal}
           onChange={(e) => setGoal(e.target.value)}
           rows={4}
-          style={{
-            width: "100%", background: "var(--bg-elev2)", border: "1px solid var(--border)",
-            borderRadius: "8px", padding: "12px 14px", fontSize: "0.875rem",
-            resize: "none", outline: "none", color: "var(--text)", lineHeight: 1.6,
-            fontFamily: "inherit",
-          }}
-          onFocus={(e) => { e.target.style.borderColor = "rgba(107,92,231,0.5)"; }}
-          onBlur={(e) => { e.target.style.borderColor = "var(--border)"; }}
+          className="textarea-neo"
           placeholder="Describe your goal…"
         />
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
           <button
             onClick={run}
             disabled={running || !goal.trim()}
-            style={{
-              padding: "9px 20px", borderRadius: "9px",
-              background: "var(--accent)", color: "white",
-              fontSize: "0.875rem", fontWeight: 600, border: "none", cursor: "pointer",
-              opacity: (running || !goal.trim()) ? 0.4 : 1,
-            }}
+            className="btn-primary"
+            style={{ opacity: (running || !goal.trim()) ? 0.45 : 1 }}
           >
             {running ? "Routing…" : team ? `Run ${team.name}` : "Run orchestrator"}
           </button>
-          {error && <div style={{ fontSize: "0.875rem", color: "#DC2626" }}>{error}</div>}
+          {error && (
+            <div
+              style={{
+                fontSize: "0.8125rem",
+                color: "var(--ink)",
+                background: "var(--pink-soft)",
+                border: "1.5px solid var(--ink)",
+                borderRadius: "10px",
+                padding: "6px 12px",
+              }}
+            >
+              {error}
+            </div>
+          )}
         </div>
         {!team && (
-          <div className="text-xs text-[var(--text-dim)]">
+          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
             Marketplace mode can hire from the full pool, but the sharpest renter narrative usually starts from a specific team page.
           </div>
         )}

@@ -1,3 +1,14 @@
+/**
+ * Token-denominated pricing in ETH (synthetic — demo economics).
+ *
+ * - `MODEL_RATES`: per-token ETH cost per model. Opus is the "all-opus naive"
+ *   baseline we compare savings against.
+ * - `agentQualityScore`: 0..1 score mixing skills breadth, recent commits, and
+ *   success rate. Used both by the router (tie-breaker) and the price formula.
+ * - `taskPriceEth`: raw compute + margin (10% floor + up to 40% quality bonus).
+ * - `computeSavings`: naive-baseline vs actual routed cost across a run — this
+ *   is the headline number on the marketplace hero.
+ */
 import type { ModelId, Tier, SubTask } from "./types";
 
 export const MODEL_RATES: Record<ModelId, number> = {

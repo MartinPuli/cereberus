@@ -26,17 +26,23 @@ export function TeamCard({ team }: { team: Team }) {
         textDecoration: "none", color: "inherit", overflow: "hidden",
       }}
     >
-      {/* Accent bar */}
-      <div style={{ height: "3px", background: "linear-gradient(to right, var(--accent), var(--tier-opus))" }} />
+      {/* Accent bar — colorful stripe */}
+      <div
+        style={{
+          height: "4px",
+          background:
+            "linear-gradient(to right, var(--yerba) 0%, var(--terere) 33%, var(--pink) 66%, var(--blue) 100%)",
+        }}
+      />
 
-      <div style={{ padding: "20px 20px 18px", display: "flex", flexDirection: "column", gap: "14px" }}>
+      <div style={{ padding: "18px 18px 16px", display: "flex", flexDirection: "column", gap: "12px" }}>
         {/* Header */}
         <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
           <div
             style={{
-              width: "44px", height: "44px", borderRadius: "11px", flexShrink: 0,
-              background: "var(--accent-soft)",
-              border: "1px solid rgba(107,92,231,0.18)",
+              width: "44px", height: "44px", borderRadius: "12px", flexShrink: 0,
+              background: "var(--cream-2)",
+              border: "2px solid var(--ink)",
               display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: "1.5rem", lineHeight: 1,
             }}
@@ -44,12 +50,15 @@ export function TeamCard({ team }: { team: Team }) {
             {team.cover_emoji}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontWeight: 700, fontSize: "0.9375rem", color: "var(--text)", letterSpacing: "-0.01em" }}>
+            <div
+              className="font-display"
+              style={{ fontSize: "1.125rem", color: "var(--ink)", lineHeight: 1, letterSpacing: "0.005em" }}
+            >
               {team.name}
             </div>
             <div
               style={{
-                fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "3px",
+                fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "4px",
                 overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
               }}
             >
@@ -57,14 +66,7 @@ export function TeamCard({ team }: { team: Team }) {
             </div>
           </div>
           {/* Specialty pill */}
-          <span
-            style={{
-              fontSize: "0.625rem", fontWeight: 500, textTransform: "uppercase",
-              letterSpacing: "0.06em", color: "var(--accent)",
-              background: "var(--accent-soft)", border: "1px solid rgba(107,92,231,0.2)",
-              padding: "2px 8px", borderRadius: "999px", flexShrink: 0,
-            }}
-          >
+          <span className="pill-neo pill-neo-accent" style={{ flexShrink: 0 }}>
             {team.specialty}
           </span>
         </div>
@@ -83,38 +85,40 @@ export function TeamCard({ team }: { team: Team }) {
         {/* Metrics */}
         <div
           style={{
-            borderTop: "1px solid var(--border)", paddingTop: "14px",
+            borderTop: "2px solid var(--ink)", paddingTop: "14px",
             display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "4px",
           }}
         >
           <div style={{ textAlign: "center" }}>
             <div
-              className="font-display"
-              style={{ fontSize: "1.625rem", color: savingsColor, lineHeight: 1 }}
+              className="num"
+              style={{ fontSize: "1.375rem", color: savingsColor, lineHeight: 1 }}
             >
               {team.avg_savings_pct.toFixed(0)}%
             </div>
-            <div style={{ fontSize: "0.625rem", color: "var(--text-muted)", marginTop: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            <div style={{ fontSize: "0.625rem", color: "var(--text-muted)", marginTop: "6px", textTransform: "uppercase", letterSpacing: "0.12em" }}>
               saved
             </div>
           </div>
-          <div style={{ textAlign: "center", borderLeft: "1px solid var(--border)", borderRight: "1px solid var(--border)" }}>
+          <div style={{ textAlign: "center", borderLeft: "1.5px dashed var(--ink)", borderRight: "1.5px dashed var(--ink)" }}>
             <div
-              style={{ fontSize: "0.9375rem", fontWeight: 700, fontFamily: "JetBrains Mono, monospace", color: "var(--text)", lineHeight: 1 }}
+              className="num"
+              style={{ fontSize: "0.9375rem", color: "var(--ink)", lineHeight: 1 }}
             >
               {team.rent_price_eth_per_task.toFixed(4)}
             </div>
-            <div style={{ fontSize: "0.625rem", color: "var(--text-muted)", marginTop: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            <div style={{ fontSize: "0.625rem", color: "var(--text-muted)", marginTop: "6px", textTransform: "uppercase", letterSpacing: "0.12em" }}>
               ETH / task
             </div>
           </div>
           <div style={{ textAlign: "center" }}>
             <div
-              style={{ fontSize: "0.9375rem", fontWeight: 700, fontFamily: "JetBrains Mono, monospace", color: "var(--text)", lineHeight: 1 }}
+              className="num"
+              style={{ fontSize: "0.9375rem", color: "var(--ink)", lineHeight: 1 }}
             >
               {team.quality.toFixed(2)}
             </div>
-            <div style={{ fontSize: "0.625rem", color: "var(--text-muted)", marginTop: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            <div style={{ fontSize: "0.625rem", color: "var(--text-muted)", marginTop: "6px", textTransform: "uppercase", letterSpacing: "0.12em" }}>
               quality
             </div>
           </div>
@@ -122,10 +126,27 @@ export function TeamCard({ team }: { team: Team }) {
 
         {/* Footer */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontFamily: "JetBrains Mono, monospace" }}>
+          <span
+            style={{
+              fontSize: "0.625rem",
+              color: "var(--text-muted)",
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 500,
+              textTransform: "uppercase",
+              letterSpacing: "0.18em",
+            }}
+          >
             {team.member_ids.length} agents · {team.tasks_completed.toLocaleString()} tasks
           </span>
-          <span style={{ fontSize: "0.75rem", color: "var(--accent)", fontWeight: 500 }}>
+          <span
+            style={{
+              fontSize: "0.6875rem",
+              color: "var(--ink)",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.2em",
+            }}
+          >
             Run →
           </span>
         </div>

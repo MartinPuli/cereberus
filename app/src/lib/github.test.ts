@@ -16,7 +16,7 @@ afterEach(() => {
 
 describe("registerFromGithub", () => {
   it("rejects invalid GitHub URLs", async () => {
-    await expect(registerFromGithub("https://example.com/foo/bar")).rejects.toMatchObject({
+    await expect(registerFromGithub({ github_url: "https://example.com/foo/bar" })).rejects.toMatchObject({
       code: "invalid_github_url",
     } satisfies Partial<ApiError>);
   });
@@ -33,7 +33,7 @@ describe("registerFromGithub", () => {
       }),
     );
 
-    const agent = await registerFromGithub("https://github.com/acme/demo-agent");
+    const agent = await registerFromGithub({ github_url: "https://github.com/acme/demo-agent" });
 
     expect(agent.source).toBe("github");
     expect(agent.skills).toEqual(["general"]);
@@ -64,7 +64,7 @@ describe("registerFromGithub", () => {
       }),
     );
 
-    const agent = await registerFromGithub("https://github.com/acme/pricing-bot");
+    const agent = await registerFromGithub({ github_url: "https://github.com/acme/pricing-bot" });
 
     expect(agent.skills).toEqual(["pricing", "packaging_strategy"]);
     expect(agent.metrics.success_rate).toBe(0.75);
@@ -81,7 +81,7 @@ describe("registerFromGithub", () => {
       }),
     );
 
-    await expect(registerFromGithub("https://github.com/acme/rate-limited")).rejects.toMatchObject({
+    await expect(registerFromGithub({ github_url: "https://github.com/acme/rate-limited" })).rejects.toMatchObject({
       code: "github_rate_limited",
     } satisfies Partial<ApiError>);
   });

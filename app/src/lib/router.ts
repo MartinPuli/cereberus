@@ -1,3 +1,11 @@
+/**
+ * Picks which Claude model + which agent handles a classified subtask.
+ *
+ * `tierToModel` is a pure tier→model lookup. `selectAgent` ranks an agent pool
+ * by: exact tier match (+2) → skill-keyword overlap with the hint → efficiency
+ * (lower avg_tokens = better) → overall quality score. The pool is typically
+ * either a team's members or the whole marketplace.
+ */
 import type { Agent, ModelId, Tier } from "./types";
 import { TIER_TO_MODEL } from "./pricing";
 

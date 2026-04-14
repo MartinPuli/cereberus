@@ -1,3 +1,13 @@
+/**
+ * Domain types shared by UI, API routes, and the orchestration pipeline.
+ *
+ * `Tier` is the classifier output bucket; `ModelId` is the Claude variant the
+ * router picks for that tier (haiku / sonnet / opus). `OrchestrationRun` +
+ * `SubTask` describe one end-to-end run (goal → decompose → classify → route →
+ * execute) and stream to the client as `OrchestrationEvent`s over SSE from
+ * `/api/orchestrate`. `Team` / `SubscriptionTier` model the marketplace layer
+ * (teams are pre-assembled agent squads clients can subscribe to).
+ */
 export type Tier = "simple" | "moderate" | "complex";
 export type ModelId = "haiku" | "sonnet" | "opus";
 
@@ -22,6 +32,26 @@ export interface Agent {
   commits_90d: number;
   quality: number;
   created_at: string;
+  tagline?: string;
+  specialty?: string;
+  rent_price_eth_per_task?: number;
+  maintainer_email?: string;
+  wallet_eth?: string;
+  team_ready?: boolean;
+}
+
+export interface AgentRegistrationInput {
+  github_url: string;
+  name?: string;
+  handle?: string;
+  tagline?: string;
+  specialty?: string;
+  default_tier?: Tier;
+  extra_skills?: string[];
+  rent_price_eth_per_task?: number;
+  maintainer_email?: string;
+  wallet_eth?: string;
+  team_ready?: boolean;
 }
 
 export interface Classification {

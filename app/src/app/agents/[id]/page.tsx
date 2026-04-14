@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { TierBadge } from "@/components/TierBadge";
@@ -6,6 +7,29 @@ import { getAgent } from "@/lib/store";
 import { MODEL_RATES, taskPriceEth } from "@/lib/pricing";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  ensureSeeded();
+  const { id } = await params;
+  const agent = getAgent(id);
+  if (!agent) return { title: "Agent not found" };
+  const title = `${agent.name} (${agent.handle})`;
+  const description =
+    agent.description?.slice(0, 180) ??
+    `${agent.name} — ${agent.default_tier} tier specialist on Nomos.`;
+  const canonical = `/agents/${agent.id}`;
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: { title, description, url: canonical, type: "profile" },
+    twitter: { card: "summary", title, description },
+  };
+}
 
 const TIER_COLOR: Record<string, string> = {
   simple:   "var(--tier-haiku)",
@@ -50,10 +74,9 @@ export default async function AgentDetail({ params }: { params: Promise<{ id: st
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <span
+              className="pill-neo"
               style={{
-                fontSize: "0.625rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em",
-                color: "var(--accent)", background: "var(--accent-soft)",
-                border: "1px solid rgba(107,92,231,0.2)", padding: "3px 10px", borderRadius: "999px",
+                background: isGitHub ? "var(--yerba-soft)" : "var(--cream-2)",
               }}
             >
               {isGitHub ? "GitHub-backed" : "Fixture"}
@@ -63,13 +86,28 @@ export default async function AgentDetail({ params }: { params: Promise<{ id: st
                 href={agent.github_url}
                 target="_blank"
                 rel="noreferrer"
-                style={{ fontSize: "0.75rem", color: "var(--accent)", textDecoration: "none", fontFamily: "JetBrains Mono, monospace" }}
+                style={{
+                  fontSize: "0.75rem",
+                  color: "var(--ink)",
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
+                  fontFamily: "JetBrains Mono, monospace",
+                }}
               >
                 {agent.github_url.replace("https://github.com/", "")} ↗
               </a>
             )}
           </div>
-          <h1 className="font-display" style={{ fontSize: "2.5rem", color: "var(--text)", margin: 0, lineHeight: 1.05, letterSpacing: "0.01em" }}>
+          <h1
+            className="font-display"
+            style={{
+              fontSize: "clamp(2rem, 5vw, 3rem)",
+              color: "var(--ink)",
+              margin: 0,
+              lineHeight: 0.95,
+              letterSpacing: "0.005em",
+            }}
+          >
             {agent.name}
           </h1>
           <div style={{ fontSize: "0.875rem", color: "var(--text-muted)", fontFamily: "JetBrains Mono, monospace" }}>

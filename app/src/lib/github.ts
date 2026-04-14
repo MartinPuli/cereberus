@@ -1,4 +1,4 @@
-import type { Agent, AgentMetrics } from "./types";
+import type { Agent, AgentMetrics, AgentRegistrationInput } from "./types";
 import { agentQualityScore } from "./pricing";
 import { ApiError } from "./http";
 
@@ -136,18 +136,24 @@ function parseSkills(md: string): string[] {
   return out.slice(0, 20);
 }
 
-export async function registerFromGithub(url: string): Promise<Agent> {
-  const { owner, repo } = parseGithubUrl(url);
+export async function registerFromGithub(
+  input: AgentRegistrationInput,
+): Promise<Agent> {
+  const { owner, repo } = parseGithubUrl(input.github_url);
   const [skillsMd, metricsJson, commits90d] = await Promise.all([
     fetchFile(owner, repo, "skills.md"),
     fetchFile(owner, repo, "memory/metrics.json"),
     commitsLast90d(owner, repo),
   ]);
 
-  const skills =
+  const parsedSkills =
     skillsMd && parseSkills(skillsMd).length > 0
       ? parseSkills(skillsMd)
       : ["general"];
+  const skills = Array.from(
+    new Set([...parsedSkills, ...(input.extra_skills ?? [])]),
+  ).slice(0, 30);
+
   let metrics: AgentMetrics = DEFAULT_METRICS;
   if (metricsJson) {
     try {
@@ -158,25 +164,29 @@ export async function registerFromGithub(url: string): Promise<Agent> {
   }
 
   const skills_count = skills.length;
-  const quality = agentQualityScore(
-    skills_count,
-    commits90d,
-    metrics.success_rate,
-  );
+  const quality = agentQualityScore(skills_count, commits90d, metrics.success_rate);
+
+  const defaultName = repo.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
   return {
     id: `${owner}-${repo}`.toLowerCase(),
-    name: repo.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-    handle: `@${owner}/${repo}`,
-    description: `Registered from github.com/${owner}/${repo}`,
+    name: input.name ?? defaultName,
+    handle: input.handle ?? `@${owner}/${repo}`,
+    description: input.tagline ?? `Registered from github.com/${owner}/${repo}`,
     source: "github",
     skills,
-    default_tier: "moderate",
+    default_tier: input.default_tier ?? "moderate",
     github_url: `https://github.com/${owner}/${repo}`,
     metrics,
     skills_count,
     commits_90d: commits90d,
     quality,
     created_at: new Date().toISOString(),
+    tagline: input.tagline,
+    specialty: input.specialty,
+    rent_price_eth_per_task: input.rent_price_eth_per_task,
+    maintainer_email: input.maintainer_email,
+    wallet_eth: input.wallet_eth,
+    team_ready: input.team_ready ?? true,
   };
 }

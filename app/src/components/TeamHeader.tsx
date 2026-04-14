@@ -27,13 +27,21 @@ export function TeamHeader({
       style={{
         padding: "14px 18px",
         display: "flex", alignItems: "center", gap: "14px",
-        borderColor: "rgba(107,92,231,0.2)",
-        background: "linear-gradient(to right, var(--accent-soft), var(--bg-elev))",
+        background: "var(--blue-soft)",
       }}
     >
       {/* Label */}
-      <span style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--accent)", flexShrink: 0, fontWeight: 600 }}>
-        Team
+      <span
+        style={{
+          fontSize: "0.625rem",
+          textTransform: "uppercase",
+          letterSpacing: "0.24em",
+          color: "var(--ink)",
+          flexShrink: 0,
+          fontWeight: 600,
+        }}
+      >
+        team
       </span>
 
       {/* Avatar stack */}

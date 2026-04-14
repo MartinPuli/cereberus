@@ -84,34 +84,54 @@ export function ExecutionStepper({
               className="card"
               style={{
                 padding: "14px",
-                borderColor: done || active ? "rgba(107,92,231,0.28)" : "var(--border)",
-                background: done || active ? "var(--accent-soft)" : "var(--bg-elev)",
+                background: done
+                  ? "var(--yerba-soft)"
+                  : active
+                    ? "var(--terere-soft)"
+                    : "var(--bg-elev)",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", marginBottom: "8px" }}>
                 <span
                   style={{
-                    width: "24px",
-                    height: "24px",
+                    width: "26px",
+                    height: "26px",
                     borderRadius: "999px",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: "0.75rem",
                     fontWeight: 700,
-                    fontFamily: "monospace",
-                    background: done ? "var(--accent)" : active ? "rgba(107,92,231,0.15)" : "var(--bg-elev2)",
-                    color: done ? "white" : active ? "var(--accent)" : "var(--text-muted)",
+                    fontFamily: "Inter, sans-serif",
+                    background: done ? "var(--yerba)" : active ? "var(--terere)" : "var(--cream-2)",
+                    color: "var(--ink)",
+                    border: "2px solid var(--ink)",
                   }}
                 >
                   {index + 1}
                 </span>
-                <span style={{ fontSize: "0.6875rem", color: done ? "var(--accent)" : active ? "var(--text)" : "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                <span
+                  style={{
+                    fontSize: "0.625rem",
+                    color: "var(--ink)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.22em",
+                    fontWeight: 600,
+                    opacity: done || active ? 1 : 0.5,
+                  }}
+                >
                   {done ? "Done" : active ? "Live" : "Queued"}
                 </span>
               </div>
-              <div style={{ fontWeight: 600, fontSize: "0.875rem", color: "var(--text)" }}>{stage.label}</div>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-dim)", marginTop: "6px", lineHeight: 1.5 }}>{stage.detail}</div>
+              <div
+                className="font-display"
+                style={{ fontSize: "1rem", color: "var(--ink)", lineHeight: 1, letterSpacing: "0.005em" }}
+              >
+                {stage.label}
+              </div>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-dim)", marginTop: "8px", lineHeight: 1.55 }}>
+                {stage.detail}
+              </div>
             </div>
           );
         })}

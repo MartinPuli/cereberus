@@ -11,46 +11,66 @@
 
 /* ─── Design tokens ─────────────────────────────── */
 :root {
-  /* Surfaces */
-  --bg:       #FAFAF9;
-  --bg-elev:  #FFFFFF;
-  --bg-elev2: #F4F4F2;
-  --bg-elev3: #EEEEED;
+  /* Surfaces — cozy light-orange "paper" */
+  --bg:       #FFF6ED;
+  --bg-elev:  #FFFDF7;
+  --bg-elev2: #F7EADA;
+  --bg-elev3: #EEDCBE;
 
   /* Borders */
-  --border:        #E4E4E2;
-  --border-strong: #CDCDC9;
+  --border:        #E6D4B8;
+  --border-strong: #C7A77A;
 
-  /* Text */
-  --text:       #1A1A1A;
-  --text-dim:   #6B6B6B;
-  --text-muted: #ABABAB;
+  /* Text — soft charcoal */
+  --text:       #1F1F1E;
+  --text-dim:   #5A564C;
+  --text-muted: #8C867C;
 
-  /* Brand */
-  --accent:      #6B5CE7;
-  --accent-soft: #F3F1FF;
-  --accent-dim:  #5548C8;
-  --accent-glow: rgba(107,92,231,0.18);
+  /* Duotone helpers */
+  --cream:        #FFF6ED;
+  --cream-2:      #F7EADA;
+  --cream-3:      #EEDCBE;
+  --ink:          #1F1F1E;
+  --shadow-neo:    3px 3px 0 0 #1F1F1E;
+  --shadow-neo-sm: 2px 2px 0 0 #1F1F1E;
+  --shadow-neo-lg: 5px 5px 0 0 #1F1F1E;
+  --shadow-neo-press: 1px 1px 0 0 #1F1F1E;
 
-  /* Tier colors */
-  --tier-haiku:     #059669;
-  --tier-haiku-bg:  #F0FDF4;
-  --tier-haiku-border: rgba(5,150,105,0.25);
-  --tier-sonnet:     #2563EB;
-  --tier-sonnet-bg:  #EFF6FF;
-  --tier-sonnet-border: rgba(37,99,235,0.25);
-  --tier-opus:     #7C3AED;
-  --tier-opus-bg:  #F5F3FF;
-  --tier-opus-border: rgba(124,58,237,0.25);
+  /* Playful accents */
+  --yerba:        #33B061;   /* yerba green   */
+  --yerba-soft:   #D5F1DF;
+  --terere:       #F8C74A;   /* tereré yellow */
+  --terere-soft:  #FDEBBF;
+  --pink:         #F19DDD;   /* pastel pink   */
+  --pink-soft:    #FBDAF2;
+  --blue:         #9DCDF1;   /* pastel blue   */
+  --blue-soft:    #DCEDFB;
+
+  /* Brand — kept as fallback accent */
+  --accent:      #1F1F1E;
+  --accent-soft: #F7EADA;
+  --accent-dim:  #000000;
+  --accent-glow: rgba(31,31,30,0.18);
+
+  /* Tier colors — mapped to the cozy palette */
+  --tier-haiku:     #33B061;
+  --tier-haiku-bg:  #D5F1DF;
+  --tier-haiku-border: rgba(51,176,97,0.35);
+  --tier-sonnet:     #4A9FD8;
+  --tier-sonnet-bg:  #DCEDFB;
+  --tier-sonnet-border: rgba(74,159,216,0.35);
+  --tier-opus:     #D97FBE;
+  --tier-opus-bg:  #FBDAF2;
+  --tier-opus-border: rgba(217,127,190,0.35);
 
   /* Savings */
-  --savings: #059669;
+  --savings: #2A9450;
 
   /* Shadows */
   --shadow-card:      0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
   --shadow-card-md:   0 4px 16px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
   --shadow-card-hover: 0 8px 24px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.06);
-  --shadow-accent:    0 4px 20px rgba(107,92,231,0.22);
+  --shadow-accent:    3px 3px 0 0 #1F1F1E;
 }
 
 /* ─── Base ──────────────────────────────────────── */
@@ -69,12 +89,12 @@ html, body {
   line-height: 1.5;
 }
 
-::selection { background: rgba(107,92,231,0.15); }
+::selection { background: #1F1F1E; color: #FFF6ED; }
 
 :focus-visible {
-  outline: 2px solid rgba(107,92,231,0.5);
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline: 2px solid #1F1F1E;
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -86,24 +106,21 @@ html, body {
 
 .card {
   background: var(--bg-elev);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: var(--shadow-card);
+  border: 2px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: var(--shadow-neo-sm);
 }
 
 .card-hover {
-  transition: transform 0.18s cubic-bezier(0.16,1,0.3,1),
-              box-shadow 0.18s cubic-bezier(0.16,1,0.3,1),
-              border-color 0.18s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 .card-hover:hover {
-  transform: translateY(-2px);
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-card-hover);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-neo-lg);
 }
 .card-hover:active {
-  transform: translateY(0);
-  box-shadow: var(--shadow-card);
+  transform: translate(1px, 1px);
+  box-shadow: var(--shadow-neo-press);
 }
 
 /* Tier text colors */
@@ -169,39 +186,279 @@ html, body {
   border-radius: 6px;
 }
 
-/* ─── Button base ────────────────────────────────── */
+/* ─── Button base — neobrutalist ─────────────────── */
 .btn-primary {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 9px 18px;
-  border-radius: 10px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 0.875rem;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 0.8125rem;
   font-weight: 600;
   text-decoration: none;
-  border: none;
+  border: 2px solid var(--ink);
   cursor: pointer;
-  box-shadow: var(--shadow-accent);
-  transition: opacity 0.15s, transform 0.15s;
+  box-shadow: var(--shadow-neo);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
-.btn-primary:hover  { opacity: 0.9; transform: translateY(-1px); }
-.btn-primary:active { opacity: 1;   transform: translateY(0); }
+.btn-primary:hover  { transform: translate(-1px, -1px); box-shadow: var(--shadow-neo-lg); }
+.btn-primary:active { transform: translate(1px, 1px);   box-shadow: var(--shadow-neo-press); }
 
 .btn-secondary {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 9px 16px;
-  border-radius: 10px;
-  background: var(--bg-elev);
-  color: var(--text-dim);
-  font-size: 0.875rem;
-  font-weight: 500;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
   text-decoration: none;
-  border: 1px solid var(--border);
+  border: 2px solid var(--ink);
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s, transform 0.15s;
+  box-shadow: var(--shadow-neo-sm);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
 }
-.btn-secondary:hover { border-color: var(--border-strong); color: var(--text); transform: translateY(-1px); }
+.btn-secondary:hover  { transform: translate(-1px, -1px); box-shadow: var(--shadow-neo); background: var(--cream-2); }
+.btn-secondary:active { transform: translate(1px, 1px);   box-shadow: var(--shadow-neo-press); }
+
+/* ─── Inputs — neobrutalist ──────────────────────── */
+.input-neo,
+.textarea-neo {
+  width: 100%;
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.875rem;
+  color: var(--ink);
+  outline: none;
+  font-family: inherit;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: var(--shadow-neo-sm);
+}
+.input-neo:focus,
+.textarea-neo:focus {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-neo);
+}
+.textarea-neo { resize: none; line-height: 1.6; }
+
+/* Small chip — specialty tags, preset pills */
+.pill-neo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  font-family: "Inter", system-ui, sans-serif;
+}
+.pill-neo-accent   { background: var(--terere-soft); }
+.pill-neo-yerba    { background: var(--yerba-soft);  }
+.pill-neo-pink     { background: var(--pink-soft);   }
+.pill-neo-blue     { background: var(--blue-soft);   }
+
+/* Tabular numbers, Inter-based — for small/medium metrics that Modak mangles */
+.num {
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* ─── Cozy / Neobrutalist utilities ───────────────── */
+
+.btn-neo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-neo);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.btn-neo:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-neo-lg);
+}
+.btn-neo:active {
+  transform: translate(1px, 1px);
+  box-shadow: var(--shadow-neo-press);
+}
+.btn-neo-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-neo);
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+.btn-neo-ghost:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-neo-lg);
+  background: var(--cream-2);
+}
+.btn-neo-ghost:active {
+  transform: translate(1px, 1px);
+  box-shadow: var(--shadow-neo-press);
+}
+
+/* Tab chip — neobrutalist pill used on the directory */
+.tab-chip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 12px 20px;
+  border: 2px solid var(--ink);
+  border-radius: 18px;
+  background: var(--cream);
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: var(--shadow-neo-sm);
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  font-family: inherit;
+}
+.tab-chip:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-neo);
+}
+.tab-chip[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.caps-mark {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  color: var(--ink);
+}
+.caps-meta {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.625rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: var(--text-dim);
+}
+
+.rule-heavy {
+  height: 2px;
+  background: var(--ink);
+  position: relative;
+}
+.rule-heavy::before,
+.rule-heavy::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--ink);
+  transform: translateY(-50%);
+}
+.rule-heavy::before { left: -3px; }
+.rule-heavy::after  { right: -3px; }
+.rule-diamond {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* ─── Hero choreography ──────────────────────────── */
+
+@keyframes paren-in-left {
+  from { opacity: 0; transform: translateX(40%) scale(0.6); }
+  to   { opacity: 1; transform: translateX(0)   scale(1);   }
+}
+@keyframes paren-in-right {
+  from { opacity: 0; transform: translateX(-40%) scale(0.6); }
+  to   { opacity: 1; transform: translateX(0)    scale(1);   }
+}
+@keyframes nomos-drop {
+  from { opacity: 0; transform: translateY(-18%) scale(0.92); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+.parens-left  { animation: paren-in-left  900ms cubic-bezier(0.22, 1, 0.36, 1) 0.3s both; }
+.parens-right { animation: paren-in-right 900ms cubic-bezier(0.22, 1, 0.36, 1) 0.3s both; }
+.nomos-drop   { animation: nomos-drop     900ms cubic-bezier(0.34, 1.56, 0.64, 1) 0.55s both; }
+
+@keyframes gnome-peek-in {
+  from { opacity: 0; transform: translate(-50%, 18%); }
+  to   { opacity: 1; transform: translate(-50%, 0);   }
+}
+@keyframes gnome-bob {
+  0%, 100% { transform: translate(-50%, 0) rotate(0deg); }
+  50%      { transform: translate(-50%, -6%) rotate(-2deg); }
+}
+.gnome-peek {
+  animation: gnome-peek-in 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 1.3s both,
+             gnome-bob 3.4s ease-in-out 2s infinite;
+  transform-origin: bottom center;
+}
+
+@keyframes hat-sway-l {
+  0%, 100% { transform: rotate(var(--hat-base, 0deg)); }
+  50%      { transform: rotate(calc(var(--hat-base, 0deg) + 3deg)); }
+}
+@keyframes hat-sway-r {
+  0%, 100% { transform: rotate(var(--hat-base, 0deg)); }
+  50%      { transform: rotate(calc(var(--hat-base, 0deg) - 3deg)); }
+}
+.hat-sway-left  { animation: hat-sway-l 5s ease-in-out 1s infinite; transform-origin: top center; }
+.hat-sway-right { animation: hat-sway-r 5s ease-in-out 1s infinite; transform-origin: top center; }
+
+@keyframes hero-fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+.hero-fade { animation: hero-fade 700ms ease-out both; }
+
+@keyframes scroll-hint {
+  0%, 100% { transform: translateY(0);   opacity: 0.45; }
+  50%      { transform: translateY(5px); opacity: 1;    }
+}
+.scroll-hint { animation: scroll-hint 2.4s ease-in-out infinite; }

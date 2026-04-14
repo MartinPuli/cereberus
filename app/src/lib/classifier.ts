@@ -1,3 +1,12 @@
+/**
+ * Classifies a subtask description into a `Tier` using Haiku.
+ *
+ * Calls the classifier model with a strict JSON-only prompt, parses the
+ * response, and falls back to `moderate` if the output can't be parsed — we
+ * never let a broken classification take down an orchestration run. Honors the
+ * `FORCE_ROUTING` env override (see `config.ts`) so demos can pin the tier for
+ * known keywords without touching the model.
+ */
 import Anthropic from "@anthropic-ai/sdk";
 import { getAnthropic } from "./anthropic";
 import { CLASSIFIER_MODEL, parseForceRouting } from "./config";

@@ -42,22 +42,25 @@ export function AgentCard({ agent }: { agent: Agent }) {
             {/* Avatar */}
             <div
               style={{
-                width: "38px", height: "38px", borderRadius: "10px", flexShrink: 0,
+                width: "40px", height: "40px", borderRadius: "12px", flexShrink: 0,
                 background: tierBg,
-                border: `1.5px solid ${tierColor}33`,
+                border: `2px solid var(--ink)`,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontFamily: "JetBrains Mono, monospace", fontWeight: 700, fontSize: "0.8125rem",
-                color: tierColor,
-                letterSpacing: "0.05em",
+                fontFamily: "Inter, sans-serif", fontWeight: 700, fontSize: "0.8125rem",
+                color: "var(--ink)",
+                letterSpacing: "0.02em",
               }}
             >
               {initials}
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--text)", letterSpacing: "-0.01em" }}>
+              <div
+                className="font-display"
+                style={{ fontSize: "1rem", color: "var(--ink)", lineHeight: 1, letterSpacing: "0.005em" }}
+              >
                 {agent.name}
               </div>
-              <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)", fontFamily: "JetBrains Mono, monospace", marginTop: "1px" }}>
+              <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)", fontFamily: "JetBrains Mono, monospace", marginTop: "4px" }}>
                 {agent.handle}
               </div>
             </div>
@@ -65,12 +68,12 @@ export function AgentCard({ agent }: { agent: Agent }) {
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "5px", flexShrink: 0 }}>
             <TierBadge tier={agent.default_tier} />
             <span
+              className="pill-neo"
               style={{
-                fontSize: "0.5625rem", textTransform: "uppercase", letterSpacing: "0.07em",
-                color: isGitHub ? "var(--savings)" : "var(--text-muted)",
-                background: isGitHub ? "var(--tier-haiku-bg)" : "var(--bg-elev2)",
-                border: `1px solid ${isGitHub ? "var(--tier-haiku-border)" : "var(--border)"}`,
-                padding: "1px 6px", borderRadius: "4px",
+                fontSize: "0.5625rem",
+                padding: "2px 8px",
+                letterSpacing: "0.14em",
+                background: isGitHub ? "var(--yerba-soft)" : "var(--cream-2)",
               }}
             >
               {isGitHub ? "GitHub" : "Fixture"}
@@ -90,27 +93,20 @@ export function AgentCard({ agent }: { agent: Agent }) {
         </p>
 
         {/* Skills */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
           {agent.skills.slice(0, 4).map((s) => (
             <span
               key={s}
-              style={{
-                fontSize: "0.625rem", background: "var(--bg-elev2)",
-                border: "1px solid var(--border)", borderRadius: "5px",
-                padding: "2px 7px", color: "var(--text-dim)",
-                fontFamily: "JetBrains Mono, monospace",
-              }}
+              className="pill-neo"
+              style={{ fontSize: "0.5625rem", padding: "2px 9px", letterSpacing: "0.1em", textTransform: "none" }}
             >
               {s.replace(/_/g, " ")}
             </span>
           ))}
           {agent.skills.length > 4 && (
             <span
-              style={{
-                fontSize: "0.625rem", background: "var(--bg-elev2)",
-                border: "1px solid var(--border)", borderRadius: "5px",
-                padding: "2px 7px", color: "var(--text-muted)",
-              }}
+              className="pill-neo"
+              style={{ fontSize: "0.5625rem", padding: "2px 9px", letterSpacing: "0.1em", background: "var(--cream-2)" }}
             >
               +{agent.skills.length - 4}
             </span>
@@ -120,7 +116,7 @@ export function AgentCard({ agent }: { agent: Agent }) {
         {/* Metrics */}
         <div
           style={{
-            borderTop: "1px solid var(--border)", paddingTop: "12px",
+            borderTop: "2px solid var(--ink)", paddingTop: "12px",
             display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "6px",
           }}
         >
@@ -128,17 +124,18 @@ export function AgentCard({ agent }: { agent: Agent }) {
             { label: "Tokens",  value: avgTokens.toLocaleString() },
             { label: "Success", value: `${(agent.metrics.success_rate * 100).toFixed(0)}%` },
             { label: "Quality", value: agent.quality.toFixed(2) },
-          ].map(({ label, value }) => (
-            <div key={label} style={{ textAlign: "center" }}>
-              <div
-                style={{
-                  fontSize: "0.875rem", fontWeight: 700,
-                  fontFamily: "JetBrains Mono, monospace", color: "var(--text)",
-                }}
-              >
+          ].map(({ label, value }, i) => (
+            <div
+              key={label}
+              style={{
+                textAlign: "center",
+                borderLeft: i > 0 ? "1.5px dashed var(--ink)" : undefined,
+              }}
+            >
+              <div className="num" style={{ fontSize: "0.9375rem", color: "var(--ink)", lineHeight: 1 }}>
                 {value}
               </div>
-              <div style={{ fontSize: "0.5625rem", color: "var(--text-muted)", marginTop: "2px", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+              <div style={{ fontSize: "0.5625rem", color: "var(--text-muted)", marginTop: "5px", textTransform: "uppercase", letterSpacing: "0.14em" }}>
                 {label}
               </div>
             </div>
@@ -146,19 +143,35 @@ export function AgentCard({ agent }: { agent: Agent }) {
         </div>
 
         {/* Quality bar */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <div style={{ flex: 1, height: "3px", background: "var(--bg-elev3)", borderRadius: "3px", overflow: "hidden" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div
+            style={{
+              flex: 1, height: "6px",
+              background: "var(--cream-2)",
+              border: "1.5px solid var(--ink)",
+              borderRadius: "999px",
+              overflow: "hidden",
+            }}
+          >
             <div
               style={{
-                height: "100%", borderRadius: "3px",
-                background: `linear-gradient(to right, ${tierColor}88, ${tierColor})`,
+                height: "100%",
+                background: tierColor,
                 width: `${agent.quality * 100}%`,
                 transition: "width 0.6s cubic-bezier(0.16,1,0.3,1)",
               }}
             />
           </div>
           <span
-            style={{ fontSize: "0.625rem", color: tierColor, fontFamily: "JetBrains Mono, monospace", fontWeight: 700, minWidth: "28px", textAlign: "right" }}
+            style={{
+              fontSize: "0.625rem",
+              color: "var(--ink)",
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 700,
+              minWidth: "32px",
+              textAlign: "right",
+              letterSpacing: "0.04em",
+            }}
           >
             {(agent.quality * 100).toFixed(0)}%
           </span>
