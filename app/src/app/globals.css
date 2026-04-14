@@ -1,39 +1,122 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..900&family=JetBrains+Mono:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
+/* ─── Design tokens ─────────────────────────────── */
 :root {
-  --bg: #0a0a0f;
-  --bg-elev: #14141c;
-  --bg-elev2: #1c1c28;
-  --border: #2a2a38;
-  --text: #e8e8f0;
-  --text-dim: #8a8aa0;
-  --accent: #7c3aed;
-  --tier-haiku: #22c55e;
-  --tier-sonnet: #3b82f6;
-  --tier-opus: #a855f7;
-  --savings: #f59e0b;
+  /* Surfaces */
+  --bg:       #FAFAF9;
+  --bg-elev:  #FFFFFF;
+  --bg-elev2: #F4F4F2;
+  --bg-elev3: #EEEEED;
+
+  /* Borders */
+  --border:        #E4E4E2;
+  --border-strong: #CDCDC9;
+
+  /* Text */
+  --text:       #1A1A1A;
+  --text-dim:   #6B6B6B;
+  --text-muted: #ABABAB;
+
+  /* Brand */
+  --accent:      #6B5CE7;
+  --accent-soft: #F3F1FF;
+  --accent-dim:  #5548C8;
+
+  /* Tier colors */
+  --tier-haiku:    #059669;
+  --tier-haiku-bg: #F0FDF4;
+  --tier-sonnet:    #2563EB;
+  --tier-sonnet-bg: #EFF6FF;
+  --tier-opus:    #7C3AED;
+  --tier-opus-bg: #F5F3FF;
+
+  /* Savings */
+  --savings: #059669;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-card-md: 0 4px 12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
 }
+
+/* ─── Base ──────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
 
 html, body {
   background: var(--bg);
   color: var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-feature-settings: "cv02","cv03","cv04","cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  line-height: 1.5;
 }
 
-.tier-haiku { color: var(--tier-haiku); }
-.tier-sonnet { color: var(--tier-sonnet); }
-.tier-opus { color: var(--tier-opus); }
-.bg-tier-haiku { background-color: color-mix(in srgb, var(--tier-haiku) 18%, transparent); border-color: var(--tier-haiku); }
-.bg-tier-sonnet { background-color: color-mix(in srgb, var(--tier-sonnet) 18%, transparent); border-color: var(--tier-sonnet); }
-.bg-tier-opus { background-color: color-mix(in srgb, var(--tier-opus) 18%, transparent); border-color: var(--tier-opus); }
+::selection { background: rgba(107,92,231,0.15); }
+
+:focus-visible {
+  outline: 2px solid rgba(107,92,231,0.45);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ─── Component classes ─────────────────────────── */
 
 .card {
   background: var(--bg-elev);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
 }
+
 .card-hover:hover {
-  border-color: var(--accent);
-  transition: border-color 0.15s ease;
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-card-md);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
+
+/* Tier badge classes */
+.tier-haiku  { color: var(--tier-haiku);  }
+.tier-sonnet { color: var(--tier-sonnet); }
+.tier-opus   { color: var(--tier-opus);   }
+
+.bg-tier-haiku  { background-color: var(--tier-haiku-bg);  border-color: rgba(5,150,105,0.25);  color: var(--tier-haiku);  }
+.bg-tier-sonnet { background-color: var(--tier-sonnet-bg); border-color: rgba(37,99,235,0.25);  color: var(--tier-sonnet); }
+.bg-tier-opus   { background-color: var(--tier-opus-bg);   border-color: rgba(124,58,237,0.25); color: var(--tier-opus);   }
+
+/* Animated dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* Slide up entrance */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.slide-up { animation: slide-up 0.22s cubic-bezier(0.16,1,0.3,1) both; }
+
+/* Badge pop */
+@keyframes badge-pop {
+  0%   { opacity: 0; transform: scale(0.7); }
+  70%  { transform: scale(1.07); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.badge-pop { animation: badge-pop 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+
+/* Counter up */
+@keyframes counter-up {
+  from { opacity: 0.2; transform: translateY(4px); }
+  to   { opacity: 1;   transform: translateY(0);   }
+}
+.counter-up { animation: counter-up 0.25s ease both; }

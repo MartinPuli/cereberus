@@ -6,116 +6,131 @@ import { getTeam, teamAverageSuccessRate, teamGithubBackedCount, teamMembers, te
 
 export const dynamic = "force-dynamic";
 
-export default async function TeamDetail({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function TeamDetail({ params }: { params: Promise<{ id: string }> }) {
   ensureSeeded();
   const { id } = await params;
-  const team = getTeam(id);
+  const team    = getTeam(id);
   if (!team) notFound();
   const members = teamMembers(team);
   const tierMix = teamTierMix(team);
   const avgSuccess = teamAverageSuccessRate(team);
   const githubBacked = teamGithubBackedCount(team);
 
+  const STATS = [
+    { label: "Avg savings",   value: `${team.avg_savings_pct.toFixed(1)}%`,  color: "var(--savings)" },
+    { label: "Rent / task",   value: `${team.rent_price_eth_per_task.toFixed(4)} ETH`, color: "var(--text)" },
+    { label: "Avg tokens",    value: team.avg_tokens_per_task.toLocaleString(), color: "var(--text)" },
+    { label: "Tasks done",    value: team.tasks_completed.toLocaleString(),  color: "var(--text)" },
+  ];
+
   return (
-    <div className="flex flex-col gap-8">
-      <Link href="/" className="text-sm text-[var(--text-dim)] hover:text-white">
-        ← back to marketplace
+    <div style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
+
+      {/* Back */}
+      <Link href="/" style={{ fontSize: "0.875rem", color: "var(--text-muted)", textDecoration: "none" }}>
+        ← Marketplace
       </Link>
 
-      <header className="flex items-start gap-6">
-        <div className="text-6xl leading-none">{team.cover_emoji}</div>
-        <div className="flex flex-col gap-2 flex-1">
-          <div className="text-xs uppercase tracking-wider text-[var(--accent)]">
+      {/* Header */}
+      <header style={{ display: "flex", alignItems: "flex-start", gap: "20px", flexWrap: "wrap" }}>
+        <div
+          style={{
+            width: "56px", height: "56px", borderRadius: "14px", flexShrink: 0,
+            background: "var(--accent-soft)", display: "flex", alignItems: "center",
+            justifyContent: "center", fontSize: "1.75rem", lineHeight: 1,
+          }}
+        >
+          {team.cover_emoji}
+        </div>
+        <div style={{ flex: 1, minWidth: "200px", display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div
+            style={{
+              display: "inline-flex", alignSelf: "flex-start",
+              fontSize: "0.6875rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em",
+              color: "var(--accent)", background: "var(--accent-soft)",
+              border: "1px solid rgba(107,92,231,0.2)",
+              padding: "3px 10px", borderRadius: "999px",
+            }}
+          >
             {team.specialty}
           </div>
-          <h1 className="text-4xl font-bold">{team.name}</h1>
-          <p className="text-lg text-[var(--text-dim)]">{team.tagline}</p>
+          <h1 style={{ fontSize: "2rem", fontWeight: 800, letterSpacing: "-0.025em", color: "var(--text)", margin: 0, lineHeight: 1.15 }}>
+            {team.name}
+          </h1>
+          <p style={{ fontSize: "1rem", color: "var(--text-dim)", margin: 0 }}>{team.tagline}</p>
         </div>
         <Link
           href={`/orchestrate?team=${team.id}`}
-          className="bg-[var(--accent)] hover:opacity-90 px-6 py-3 rounded text-sm font-semibold whitespace-nowrap"
+          style={{
+            display: "inline-flex", alignItems: "center",
+            padding: "10px 20px", borderRadius: "10px",
+            background: "var(--accent)", color: "white",
+            fontSize: "0.875rem", fontWeight: 600, textDecoration: "none", flexShrink: 0,
+          }}
         >
           Run this team →
         </Link>
       </header>
 
-      <p className="text-[var(--text-dim)] max-w-3xl">{team.description}</p>
-      <p className="text-sm text-[var(--text-dim)] max-w-3xl">
-        Teams are the customer-facing product in AgentMarket. Each team packages compatible specialist
-        agents into a reusable unit that can decompose a goal, route subtasks across models, and deliver
-        a combined result for one per-task price.
+      <p style={{ color: "var(--text-dim)", maxWidth: "640px", lineHeight: 1.65, fontSize: "0.9375rem", margin: 0 }}>
+        {team.description}
       </p>
 
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="card p-4">
-          <div className="text-[10px] uppercase text-[var(--text-dim)]">Avg savings</div>
-          <div className="font-mono text-3xl text-[var(--savings)] font-bold">
-            {team.avg_savings_pct.toFixed(1)}%
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {STATS.map(({ label, value, color }) => (
+          <div key={label} className="card" style={{ padding: "16px 18px" }}>
+            <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)", marginBottom: "6px" }}>
+              {label}
+            </div>
+            <div style={{ fontFamily: "monospace", fontSize: "1.5rem", fontWeight: 700, color }}>
+              {value}
+            </div>
           </div>
-          <div className="text-[10px] text-[var(--text-dim)] mt-1">
-            vs naive all-Opus
-          </div>
-        </div>
-        <div className="card p-4">
-          <div className="text-[10px] uppercase text-[var(--text-dim)]">Rent / task</div>
-          <div className="font-mono text-3xl font-bold">
-            {team.rent_price_eth_per_task.toFixed(4)}
-          </div>
-          <div className="text-[10px] text-[var(--text-dim)] mt-1">ETH</div>
-        </div>
-        <div className="card p-4">
-          <div className="text-[10px] uppercase text-[var(--text-dim)]">Avg tokens / task</div>
-          <div className="font-mono text-3xl font-bold">
-            {team.avg_tokens_per_task.toLocaleString()}
-          </div>
-        </div>
-        <div className="card p-4">
-          <div className="text-[10px] uppercase text-[var(--text-dim)]">Tasks completed</div>
-          <div className="font-mono text-3xl font-bold">
-            {team.tasks_completed.toLocaleString()}
-          </div>
-        </div>
-      </section>
+        ))}
+      </div>
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card p-4 flex flex-col gap-2">
-          <div className="text-[10px] uppercase text-[var(--text-dim)]">Model mix</div>
-          <div className="text-sm text-[var(--text-dim)]">
+      {/* Trust signals */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="card" style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)" }}>Model mix</div>
+          <div style={{ fontSize: "0.875rem", color: "var(--text-dim)" }}>
             {tierMix.simple} simple · {tierMix.moderate} moderate · {tierMix.complex} complex
           </div>
-          <div className="text-xs text-[var(--text-dim)]">
-            Shows whether this squad can cover cheap formatting work, balanced writing, and deep reasoning.
+          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Covers cheap formatting, balanced writing, and deep reasoning.
           </div>
         </div>
-        <div className="card p-4 flex flex-col gap-2">
-          <div className="text-[10px] uppercase text-[var(--text-dim)]">Member reliability</div>
-          <div className="font-mono text-2xl">{(avgSuccess * 100).toFixed(0)}%</div>
-          <div className="text-xs text-[var(--text-dim)]">
-            Average success rate across the team&rsquo;s specialists.
+        <div className="card" style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)" }}>Member reliability</div>
+          <div style={{ fontFamily: "monospace", fontSize: "1.5rem", fontWeight: 700, color: "var(--text)" }}>{(avgSuccess * 100).toFixed(0)}%</div>
+          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Average success rate across specialists.
           </div>
         </div>
-        <div className="card p-4 flex flex-col gap-2">
-          <div className="text-[10px] uppercase text-[var(--text-dim)]">GitHub-backed members</div>
-          <div className="font-mono text-2xl">{githubBacked}/{members.length}</div>
-          <div className="text-xs text-[var(--text-dim)]">
-            Live-registered agents inside this team vs seeded fixtures.
+        <div className="card" style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)" }}>GitHub-backed</div>
+          <div style={{ fontFamily: "monospace", fontSize: "1.5rem", fontWeight: 700, color: "var(--text)" }}>{githubBacked}/{members.length}</div>
+          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Live-registered agents vs seeded fixtures.
           </div>
         </div>
-      </section>
+      </div>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-xs uppercase tracking-wider text-[var(--text-dim)]">
+      {/* Skills */}
+      <section style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        <h2 style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", margin: 0 }}>
           Shared skills
         </h2>
-        <div className="flex flex-wrap gap-2">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
           {team.skills_union.map((s) => (
             <span
               key={s}
-              className="text-xs bg-[var(--bg-elev2)] border border-[var(--border)] rounded px-2 py-1"
+              style={{
+                fontSize: "0.75rem", fontFamily: "monospace",
+                background: "var(--bg-elev2)", border: "1px solid var(--border)",
+                borderRadius: "6px", padding: "3px 9px", color: "var(--text-dim)",
+              }}
             >
               {s.replace(/_/g, " ")}
             </span>
@@ -123,32 +138,45 @@ export default async function TeamDetail({
         </div>
       </section>
 
-      <section className="flex flex-col gap-4">
-        <h2 className="text-xl font-semibold">Members ({members.length})</h2>
+      {/* Members */}
+      <section style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <h2 style={{ fontSize: "1.0625rem", fontWeight: 600, color: "var(--text)", margin: 0 }}>
+          Members <span style={{ color: "var(--text-muted)", fontWeight: 400 }}>({members.length})</span>
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {members.map((a) => (
-            <AgentCard key={a.id} agent={a} />
-          ))}
+          {members.map((a) => <AgentCard key={a.id} agent={a} />)}
         </div>
       </section>
 
-      <section className="card p-6 flex items-center justify-between">
+      {/* CTA */}
+      <div
+        className="card"
+        style={{ padding: "24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}
+      >
         <div>
-          <div className="text-xs uppercase text-[var(--text-dim)]">Ready to ship?</div>
-          <div className="text-lg font-semibold mt-1">
+          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>
+            Ready to ship?
+          </div>
+          <div style={{ fontSize: "1.0625rem", fontWeight: 600, color: "var(--text)" }}>
             Hand this team your goal
           </div>
-          <div className="text-sm text-[var(--text-dim)]">
-            The squad decomposes, classifies, routes, and delivers.
+          <div style={{ fontSize: "0.875rem", color: "var(--text-dim)", marginTop: "2px" }}>
+            Decomposes, classifies, routes, and delivers.
           </div>
         </div>
         <Link
           href={`/orchestrate?team=${team.id}`}
-          className="bg-[var(--accent)] hover:opacity-90 px-6 py-3 rounded text-sm font-semibold whitespace-nowrap"
+          style={{
+            display: "inline-flex", alignItems: "center",
+            padding: "10px 22px", borderRadius: "10px",
+            background: "var(--accent)", color: "white",
+            fontSize: "0.875rem", fontWeight: 600, textDecoration: "none", flexShrink: 0,
+          }}
         >
           Run this team →
         </Link>
-      </section>
+      </div>
+
     </div>
   );
 }

@@ -8,7 +8,14 @@ app/out/
 app/.vercel/
 app/.env*.local
 
+# frontend (mock-only, not deployed)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env*.local
+
 # top-level noise
 node_modules/
 .vercel/
 .DS_Store
+.claude/

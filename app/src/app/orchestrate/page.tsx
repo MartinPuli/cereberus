@@ -140,13 +140,14 @@ function OrchestrateInner() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Orchestrate</h1>
-        <p className="text-[var(--text-dim)] max-w-2xl">
-          Give a rented team a goal. The team&rsquo;s orchestrator will decompose it into subtasks,
-          classify each by complexity, route it to the cheapest Claude model that can do it well,
-          and assign the work to the right specialist from the team or marketplace pool.
+    <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+      <header style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", color: "var(--text)", margin: 0 }}>
+          Orchestrator
+        </h1>
+        <p style={{ color: "var(--text-dim)", maxWidth: "560px", lineHeight: 1.6, fontSize: "0.9rem", margin: 0 }}>
+          Give the orchestrator a goal. It decomposes it into subtasks, classifies each by complexity,
+          and routes each to the cheapest Claude model that can do it well.
         </p>
       </header>
 
@@ -179,43 +180,60 @@ function OrchestrateInner() {
       </div>
 
       {team && (
-        <div className="card p-4 flex items-center gap-4 border-[var(--accent)]">
-          <div className="text-3xl">{team.cover_emoji}</div>
-          <div className="flex-1 min-w-0">
-            <div className="text-xs uppercase tracking-wider text-[var(--accent)]">
-              Active team
+        <div
+          className="card"
+          style={{ padding: "14px 16px", display: "flex", alignItems: "center", gap: "14px", borderColor: "rgba(107,92,231,0.3)" }}
+        >
+          <div style={{ fontSize: "1.5rem", lineHeight: 1, flexShrink: 0 }}>{team.cover_emoji}</div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)", marginBottom: "2px" }}>
+              Team rented
             </div>
-            <div className="font-semibold truncate">{team.name}</div>
-            <div className="text-xs text-[var(--text-dim)]">
-              {agents.length} specialists · avg {team.avg_savings_pct.toFixed(1)}% savings on past runs
+            <div style={{ fontWeight: 600, fontSize: "0.9375rem", color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {team.name}
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "2px" }}>
+              {agents.length} agents · avg {team.avg_savings_pct.toFixed(1)}% savings
             </div>
           </div>
           <Link
             href={`/teams/${team.id}`}
-            className="text-xs text-[var(--text-dim)] hover:text-white"
+            style={{ fontSize: "0.75rem", color: "var(--text-muted)", textDecoration: "none", flexShrink: 0 }}
           >
             view team →
           </Link>
         </div>
       )}
 
-      <div className="card p-4 flex flex-col gap-3">
+      <div className="card" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
         <textarea
           value={goal}
           onChange={(e) => setGoal(e.target.value)}
           rows={4}
-          className="w-full bg-[var(--bg-elev2)] border border-[var(--border)] rounded p-3 text-sm font-mono resize-none focus:outline-none focus:border-[var(--accent)]"
-          placeholder="Describe your goal..."
+          style={{
+            width: "100%", background: "var(--bg-elev2)", border: "1px solid var(--border)",
+            borderRadius: "8px", padding: "12px 14px", fontSize: "0.875rem",
+            resize: "none", outline: "none", color: "var(--text)", lineHeight: 1.6,
+            fontFamily: "inherit",
+          }}
+          onFocus={(e) => { e.target.style.borderColor = "rgba(107,92,231,0.5)"; }}
+          onBlur={(e) => { e.target.style.borderColor = "var(--border)"; }}
+          placeholder="Describe your goal…"
         />
-        <div className="flex items-center gap-3">
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <button
             onClick={run}
             disabled={running || !goal.trim()}
-            className="bg-[var(--accent)] hover:opacity-90 disabled:opacity-40 px-5 py-2 rounded text-sm font-semibold"
+            style={{
+              padding: "9px 20px", borderRadius: "9px",
+              background: "var(--accent)", color: "white",
+              fontSize: "0.875rem", fontWeight: 600, border: "none", cursor: "pointer",
+              opacity: (running || !goal.trim()) ? 0.4 : 1,
+            }}
           >
-            {running ? "Running..." : team ? `Run ${team.name}` : "Run marketplace orchestration"}
+            {running ? "Routing…" : team ? `Dispatch ${team.name}` : "Run orchestrator"}
           </button>
-          {error && <div className="text-sm text-red-400">{error}</div>}
+          {error && <div style={{ fontSize: "0.875rem", color: "#DC2626" }}>{error}</div>}
         </div>
         {!team && (
           <div className="text-xs text-[var(--text-dim)]">
