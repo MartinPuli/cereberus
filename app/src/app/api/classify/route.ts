@@ -1,25 +1,23 @@
 import { NextResponse } from "next/server";
 import { classify } from "@/lib/classifier";
+import { jsonError, parseJsonBody, requireTrimmedString } from "@/lib/http";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const body = (await req.json()) as { description?: string };
-  if (!body.description) {
-    return NextResponse.json(
-      { success: false, error: { message: "description required" } },
-      { status: 400 },
-    );
-  }
   try {
-    const classification = await classify(body.description);
+    const body = await parseJsonBody<{ description?: string }>(req);
+    const description = requireTrimmedString(body.description, "description", {
+      maxLength: 2000,
+    });
+    const classification = await classify(description);
     return NextResponse.json({ success: true, data: classification });
   } catch (e) {
-    const message = e instanceof Error ? e.message : "classify failed";
-    return NextResponse.json(
-      { success: false, error: { message } },
-      { status: 500 },
-    );
+    return jsonError(e, {
+      status: 500,
+      code: "classify_failed",
+      message: "classify failed",
+    });
   }
 }

@@ -6,6 +6,7 @@ import { classify } from "@/lib/classifier";
 import { selectAgent, tierToModel } from "@/lib/router";
 import { runSubagent } from "@/lib/executor";
 import { computeSavings, taskPriceEth } from "@/lib/pricing";
+import { ApiError, jsonError, optionalTrimmedString, parseJsonBody, requireTrimmedString } from "@/lib/http";
 import type { OrchestrationEvent, OrchestrationRun, SubTask, Agent } from "@/lib/types";
 import { v4 as uuid } from "uuid";
 
@@ -18,12 +19,36 @@ function sse(event: OrchestrationEvent): string {
 
 export async function POST(req: Request) {
   ensureSeeded();
-  const { goal, team_id } = (await req.json()) as { goal?: string; team_id?: string };
-  if (!goal) {
-    return new Response(
-      JSON.stringify({ success: false, error: { message: "goal required" } }),
-      { status: 400, headers: { "content-type": "application/json" } },
-    );
+  let goal: string;
+  let teamId: string | undefined;
+  let agentPool: Agent[];
+
+  try {
+    const body = await parseJsonBody<{ goal?: string; team_id?: string }>(req);
+    goal = requireTrimmedString(body.goal, "goal", { maxLength: 5000 });
+    teamId = optionalTrimmedString(body.team_id, "team_id", { maxLength: 200 });
+
+    if (teamId) {
+      const team = getTeam(teamId);
+      if (!team) {
+        throw new ApiError(404, "team_not_found", `team ${teamId} not found`);
+      }
+      agentPool = teamMembers(team);
+      if (agentPool.length === 0) {
+        throw new ApiError(422, "team_empty", `team ${teamId} has no members`);
+      }
+    } else {
+      agentPool = listAgents();
+      if (agentPool.length === 0) {
+        throw new ApiError(503, "marketplace_empty", "no agents available in marketplace");
+      }
+    }
+  } catch (error) {
+    return jsonError(error, {
+      status: 500,
+      code: "orchestrate_failed",
+      message: "orchestrate request failed",
+    });
   }
 
   const stream = new ReadableStream({
@@ -33,16 +58,6 @@ export async function POST(req: Request) {
         controller.enqueue(enc.encode(sse(ev)));
 
       try {
-        let agentPool: Agent[];
-        if (team_id) {
-          const team = getTeam(team_id);
-          if (!team) throw new Error(`team ${team_id} not found`);
-          agentPool = teamMembers(team);
-          if (agentPool.length === 0) throw new Error(`team ${team_id} has no members`);
-        } else {
-          agentPool = listAgents();
-        }
-
         const run: OrchestrationRun = {
           id: uuid(),
           goal,

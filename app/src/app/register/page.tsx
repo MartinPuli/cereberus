@@ -5,6 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { Agent } from "@/lib/types";
 
+interface RegisterErrorResponse {
+  success: false;
+  error?: {
+    code?: string;
+    message?: string;
+  };
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const [url, setUrl] = useState("https://github.com/");
@@ -17,19 +25,28 @@ export default function RegisterPage() {
     setLoading(true);
     setError(null);
     setAgent(null);
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ github_url: url }),
-    });
-    const j = (await res.json()) as { success: boolean; data?: Agent; error?: { message: string } };
+    let res: Response;
+    try {
+      res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ github_url: url }),
+      });
+    } catch {
+      setLoading(false);
+      setError("Unable to reach registration. Check your network and try again.");
+      return;
+    }
+    const j = (await res.json()) as
+      | { success: true; data: Agent }
+      | RegisterErrorResponse;
     setLoading(false);
     if (!j.success) {
       setError(j.error?.message ?? "unknown error");
       return;
     }
-    setAgent(j.data!);
-    setTimeout(() => router.push(`/agents/${j.data!.id}`), 1500);
+    setAgent(j.data);
+    setTimeout(() => router.push(`/agents/${j.data.id}`), 1500);
   }
 
   return (

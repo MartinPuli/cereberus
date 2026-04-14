@@ -16,6 +16,14 @@ interface TeamDetailResponse {
   members: Agent[];
 }
 
+interface ApiErrorResponse {
+  success: false;
+  error?: {
+    code?: string;
+    message?: string;
+  };
+}
+
 function OrchestrateInner() {
   const params = useSearchParams();
   const teamId = params.get("team");
@@ -59,13 +67,27 @@ function OrchestrateInner() {
     setFinished(false);
     setError(null);
 
-    const res = await fetch("/api/orchestrate", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ goal, team_id: teamId ?? undefined }),
-    });
+    let res: Response;
+    try {
+      res = await fetch("/api/orchestrate", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ goal, team_id: teamId ?? undefined }),
+      });
+    } catch {
+      setError("Unable to reach the orchestrator. Check your network and try again.");
+      setRunning(false);
+      return;
+    }
     if (!res.ok || !res.body) {
-      setError("orchestrate request failed");
+      let message = "orchestrate request failed";
+      try {
+        const payload = (await res.json()) as ApiErrorResponse;
+        message = payload.error?.message ?? message;
+      } catch {
+        // Keep the fallback message when the response is not JSON.
+      }
+      setError(message);
       setRunning(false);
       return;
     }

@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { getAnthropic } from "./anthropic";
 import { CLASSIFIER_MODEL, parseForceRouting } from "./config";
+import { ApiError, requireTrimmedString } from "./http";
 import type { Classification, Tier } from "./types";
 
 const SYSTEM_PROMPT = `You are a task complexity classifier. Given a subtask description, output JSON only:
@@ -32,12 +33,15 @@ function applyForceRouting(description: string, base: Classification): Classific
 }
 
 export async function classify(description: string): Promise<Classification> {
+  const normalizedDescription = requireTrimmedString(description, "description", {
+    maxLength: 2000,
+  });
   const client = getAnthropic();
   const res = await client.messages.create({
     model: CLASSIFIER_MODEL,
     max_tokens: 256,
     system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: `Subtask: ${description}` }],
+    messages: [{ role: "user", content: `Subtask: ${normalizedDescription}` }],
   });
   const text = res.content
     .filter((c): c is Anthropic.TextBlock => c.type === "text")
@@ -50,6 +54,16 @@ export async function classify(description: string): Promise<Classification> {
     if (!["simple", "moderate", "complex"].includes(parsed.tier)) {
       throw new Error(`invalid tier: ${parsed.tier}`);
     }
+    if (typeof parsed.reason !== "string" || !parsed.reason.trim()) {
+      throw new Error("invalid reason");
+    }
+    if (
+      typeof parsed.estimated_tokens !== "number" ||
+      !Number.isFinite(parsed.estimated_tokens) ||
+      parsed.estimated_tokens <= 0
+    ) {
+      throw new Error("invalid estimated_tokens");
+    }
   } catch {
     parsed = {
       tier: "moderate",
@@ -57,5 +71,9 @@ export async function classify(description: string): Promise<Classification> {
       estimated_tokens: 1000,
     };
   }
-  return applyForceRouting(description, parsed);
+  try {
+    return applyForceRouting(normalizedDescription, parsed);
+  } catch {
+    throw new ApiError(502, "classifier_failed", "classifier failed to produce a usable result");
+  }
 }

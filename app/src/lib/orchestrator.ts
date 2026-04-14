@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { getAnthropic } from "./anthropic";
+import { ApiError, requireTrimmedString } from "./http";
 import { ORCHESTRATOR_MODEL } from "./config";
 
 interface DecomposedSubtask {
@@ -44,6 +45,7 @@ const TOOL = {
 };
 
 export async function decompose(goal: string): Promise<DecomposedSubtask[]> {
+  const normalizedGoal = requireTrimmedString(goal, "goal", { maxLength: 5000 });
   const client = getAnthropic();
   const res = await client.messages.create({
     model: ORCHESTRATOR_MODEL,
@@ -51,15 +53,36 @@ export async function decompose(goal: string): Promise<DecomposedSubtask[]> {
     system: ORCHESTRATOR_SYSTEM,
     tools: [TOOL],
     tool_choice: { type: "tool", name: "submit_subtasks" },
-    messages: [{ role: "user", content: `Goal: ${goal}` }],
+    messages: [{ role: "user", content: `Goal: ${normalizedGoal}` }],
   });
   const toolUse = res.content.find(
     (c): c is Anthropic.ToolUseBlock => c.type === "tool_use",
   );
-  if (!toolUse) throw new Error("orchestrator did not call submit_subtasks");
-  const input = toolUse.input as { subtasks: DecomposedSubtask[] };
-  if (!input.subtasks || input.subtasks.length < 3) {
-    throw new Error("orchestrator returned fewer than 3 subtasks");
+  if (!toolUse) {
+    throw new ApiError(
+      502,
+      "invalid_orchestrator_output",
+      "orchestrator did not call submit_subtasks",
+    );
   }
-  return input.subtasks;
+  const input = toolUse.input as { subtasks: DecomposedSubtask[] };
+  if (!Array.isArray(input.subtasks) || input.subtasks.length < 3) {
+    throw new ApiError(
+      502,
+      "invalid_orchestrator_output",
+      "orchestrator returned fewer than 3 subtasks",
+    );
+  }
+  return input.subtasks.map((subtask, index) => ({
+    description: requireTrimmedString(
+      subtask?.description,
+      `subtasks[${index}].description`,
+      { maxLength: 500 },
+    ),
+    skill_hint: requireTrimmedString(
+      subtask?.skill_hint,
+      `subtasks[${index}].skill_hint`,
+      { maxLength: 80 },
+    ).toLowerCase(),
+  }));
 }

@@ -14,10 +14,18 @@ pnpm dev
 
 Open http://localhost:3000.
 
+## Environment
+
+- `ANTHROPIC_API_KEY` is required for classify, orchestrate, and subagent execution.
+- `GITHUB_TOKEN` is optional but recommended for `/api/register`; without it, GitHub rate limits are much lower.
+- `MOCK_MODE=1` disables live GitHub registration and keeps the app in fixtures-only mode.
+- `FORCE_ROUTING=pricing=complex,landing=moderate,faq=simple` optionally pins classifier output by keyword for demo safety.
+
+If `ANTHROPIC_API_KEY` is missing, API routes now return a clear configuration error instead of a generic failure.
+
 ## Routes
 
 - `/` — marketplace of teams (primary) + individual agents (secondary)
-- `/teams/[id]` — team detail with stats, members, and a team-run CTA
 - `/orchestrate` — live orchestration dashboard, SSE-streamed; accepts `?team=<id>`
 - `/agents/[id]` — agent detail with per-tier token metrics and pricing
 - `/teams/[id]` — team detail and launch point for team-scoped orchestration
@@ -29,10 +37,21 @@ Open http://localhost:3000.
 - `GET /api/teams/[id]` — team detail with members
 - `GET /api/agents` — list agents sorted by quality
 - `GET /api/agents/[id]` — agent detail
-- `GET /api/teams/[id]` — team detail with members
 - `POST /api/classify` — `{description}` → `{tier, reason, estimated_tokens}`
 - `POST /api/orchestrate` — `{goal, team_id?}` → SSE stream of events (`run_created`, `decomposed`, `classified`, `agent_assigned`, `task_started`, `task_completed`, `run_completed`). If `team_id` is set, routing is scoped to that team's members.
 - `POST /api/register` — `{github_url}` → agent record (reads `skills.md`, `memory/metrics.json`, 90d commits)
+
+Error shape for JSON routes:
+
+```json
+{
+   "success": false,
+   "error": {
+      "code": "invalid_request",
+      "message": "goal is required"
+   }
+}
+```
 
 ## Product model
 
@@ -42,6 +61,8 @@ Open http://localhost:3000.
 - Registration currently onboards agents, not whole teams.
 
 ## Demo goal
+
+> Launch a new SaaS product: design the pricing tier architecture, write the landing page headline and hero copy, and format a 5-question FAQ section from these raw notes.
 
 ## Demo flow
 
