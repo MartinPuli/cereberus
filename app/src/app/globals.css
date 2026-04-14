@@ -256,6 +256,10 @@ html, body {
   letter-spacing: 0.1em;
   line-height: 1.4;
   font-family: "Inter", system-ui, sans-serif;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .pill-neo-accent   { background: var(--terere-soft); }
 .pill-neo-yerba    { background: var(--yerba-soft);  }

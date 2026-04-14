@@ -65,11 +65,11 @@ export function TeamCard({ team }: { team: Team }) {
             >
               {team.tagline}
             </div>
+            {/* Specialty pill — below name to avoid overlap */}
+            <span className="pill-neo pill-neo-accent" style={{ alignSelf: "flex-start", marginTop: "6px" }}>
+              {team.specialty}
+            </span>
           </div>
-          {/* Specialty pill */}
-          <span className="pill-neo pill-neo-accent" style={{ flexShrink: 0 }}>
-            {team.specialty}
-          </span>
         </div>
 
         {/* Description */}
