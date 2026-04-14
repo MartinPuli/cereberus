@@ -18,13 +18,14 @@ export default function MarketplacePage() {
           Marketplace
         </div>
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-          Rent pre-assembled agent teams. Pay per task.
+          Rent specialist teams that route work to the cheapest model that fits.
         </h1>
         <p className="text-[var(--text-dim)] max-w-2xl">
-          Each team is a curated squad of specialist agents with a shared mission.
-          Point one at your repo or task — the internal orchestrator decomposes the work,
-          classifies each subtask, and routes it to the cheapest Claude model inside the team
-          that can do it well. You only pay for the compute you actually used.
+          AgentMarket is a compute-routed marketplace. The primary unit you rent is a team:
+          a curated squad of specialist agents with a shared mission. Give a team a goal and its
+          internal orchestrator decomposes the work, classifies each subtask, and routes it to the
+          cheapest Claude model that can still do it well. Individual agents still exist as the raw
+          marketplace supply that teams are assembled from.
         </p>
       </header>
 
@@ -49,12 +50,13 @@ export default function MarketplacePage() {
             href="/register"
             className="text-xs text-[var(--accent)] hover:underline"
           >
-            register yours →
+            add one to the marketplace →
           </Link>
         </div>
         <p className="text-xs text-[var(--text-dim)] max-w-2xl">
-          The raw pool. Each agent advertises what tier they&rsquo;re optimized for and how token-efficient
-          they are on that tier. Teams are built by stitching compatible agents together.
+          This is the underlying supply layer. Each agent advertises what tier they&rsquo;re optimized for,
+          which skills they bring, and how token-efficient they are on that tier. Teams are composed
+          from this pool and remain the main thing customers rent.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {agents.map((a) => (

@@ -36,11 +36,16 @@ export default async function TeamDetail({
           href={`/orchestrate?team=${team.id}`}
           className="bg-[var(--accent)] hover:opacity-90 px-6 py-3 rounded text-sm font-semibold whitespace-nowrap"
         >
-          Rent for a task →
+          Run this team →
         </Link>
       </header>
 
       <p className="text-[var(--text-dim)] max-w-3xl">{team.description}</p>
+      <p className="text-sm text-[var(--text-dim)] max-w-3xl">
+        Teams are the customer-facing product in AgentMarket. Each team packages compatible specialist
+        agents into a reusable unit that can decompose a goal, route subtasks across models, and deliver
+        a combined result for one per-task price.
+      </p>
 
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="card p-4">
@@ -112,7 +117,7 @@ export default async function TeamDetail({
           href={`/orchestrate?team=${team.id}`}
           className="bg-[var(--accent)] hover:opacity-90 px-6 py-3 rounded text-sm font-semibold whitespace-nowrap"
         >
-          Rent for a task →
+          Run this team →
         </Link>
       </section>
     </div>

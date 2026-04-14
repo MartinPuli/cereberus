@@ -7,12 +7,12 @@ export function Nav() {
         ⟐ <span className="text-[var(--accent)]">Nomos</span>
       </Link>
       <div className="flex gap-5 text-sm text-[var(--text-dim)]">
-        <Link href="/" className="hover:text-white">Teams</Link>
-        <Link href="/orchestrate" className="hover:text-white">Orchestrate</Link>
-        <Link href="/register" className="hover:text-white">Register agent</Link>
+        <Link href="/" className="hover:text-white">Marketplace</Link>
+        <Link href="/orchestrate" className="hover:text-white">Run a team</Link>
+        <Link href="/register" className="hover:text-white">Register an agent</Link>
       </div>
       <div className="ml-auto text-xs text-[var(--text-dim)]">
-        rent-a-team · compute-routed
+        teams first · compute-routed
       </div>
     </nav>
   );

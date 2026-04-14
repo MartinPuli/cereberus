@@ -105,9 +105,9 @@ function OrchestrateInner() {
       <header className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight">Orchestrate</h1>
         <p className="text-[var(--text-dim)] max-w-2xl">
-          Give the orchestrator a goal. It will decompose it into subtasks,
-          classify each by complexity, route to the cheapest Claude model that
-          can do it well, and hire an agent from the pool.
+          Give a rented team a goal. The team&rsquo;s orchestrator will decompose it into subtasks,
+          classify each by complexity, route it to the cheapest Claude model that can do it well,
+          and assign the work to the right specialist from the team or marketplace pool.
         </p>
       </header>
 
@@ -116,11 +116,11 @@ function OrchestrateInner() {
           <div className="text-3xl">{team.cover_emoji}</div>
           <div className="flex-1 min-w-0">
             <div className="text-xs uppercase tracking-wider text-[var(--accent)]">
-              Team rented
+              Active team
             </div>
             <div className="font-semibold truncate">{team.name}</div>
             <div className="text-xs text-[var(--text-dim)]">
-              {agents.length} agents · avg {team.avg_savings_pct.toFixed(1)}% savings on past runs
+              {agents.length} specialists · avg {team.avg_savings_pct.toFixed(1)}% savings on past runs
             </div>
           </div>
           <Link
@@ -146,7 +146,7 @@ function OrchestrateInner() {
             disabled={running || !goal.trim()}
             className="bg-[var(--accent)] hover:opacity-90 disabled:opacity-40 px-5 py-2 rounded text-sm font-semibold"
           >
-            {running ? "Running..." : team ? `Dispatch ${team.name}` : "Run orchestrator"}
+            {running ? "Running..." : team ? `Run ${team.name}` : "Run marketplace orchestration"}
           </button>
           {error && <div className="text-sm text-red-400">{error}</div>}
         </div>

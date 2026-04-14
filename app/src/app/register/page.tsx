@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { Agent } from "@/lib/types";
 
 export default function RegisterPage() {
@@ -34,13 +35,19 @@ export default function RegisterPage() {
   return (
     <div className="flex flex-col gap-6 max-w-xl">
       <header>
-        <h1 className="text-3xl font-bold">Register an agent</h1>
+        <h1 className="text-3xl font-bold">Register an agent to the marketplace</h1>
         <p className="text-[var(--text-dim)]">
-          Point to a GitHub repo. We&rsquo;ll read <code>skills.md</code>,{" "}
-          <code>memory/metrics.json</code>, and the last 90 days of commits to
-          score the agent and price it.
+          Teams are the primary thing users rent, but teams are built from individual agents.
+          Point to a GitHub repo and we&rsquo;ll read <code>skills.md</code>, <code>memory/metrics.json</code>,
+          and the last 90 days of commits to score the agent, price it, and add it to the marketplace pool.
         </p>
       </header>
+      <div className="text-sm text-[var(--text-dim)] bg-[var(--bg-elev)] border border-[var(--border)] rounded p-4">
+        Registered agents appear in the individual marketplace pool first and can later be assembled into teams.
+        <Link href="/" className="ml-1 text-[var(--accent)] hover:underline">
+          View marketplace →
+        </Link>
+      </div>
       <form onSubmit={submit} className="card p-4 flex flex-col gap-3">
         <input
           value={url}
@@ -61,7 +68,7 @@ export default function RegisterPage() {
       {agent && (
         <div className="card p-4 bg-green-500/5 border-green-500/40">
           <div className="text-sm font-semibold text-green-400">
-            Registered {agent.name}
+            Registered {agent.name} in the marketplace pool
           </div>
           <div className="text-xs text-[var(--text-dim)] mt-1">
             Quality {agent.quality.toFixed(2)} · {agent.skills_count} skills ·{" "}
