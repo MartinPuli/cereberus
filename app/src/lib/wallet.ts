@@ -16,14 +16,21 @@ export async function getWalletClient(): Promise<any> {
     providerPromise = (async () => {
       try {
         const { createEVMClient } = await import("@metamask/connect-evm");
-        return await createEVMClient({
-          dappMetadata: {
+        const client = await createEVMClient({
+          dapp: {
             name: "Nomos",
             url: typeof window !== "undefined"
               ? window.location.origin
               : "https://nomos.market",
           },
+          api: {
+            supportedNetworks: {
+              "0x1":      "https://eth.llamarpc.com",
+              "0xaa36a7": "https://rpc.sepolia.org",
+            },
+          },
         });
+        return client.getProvider();
       } catch {
         // If SDK fails, fall back to any injected provider
         if (injected) return injected;
