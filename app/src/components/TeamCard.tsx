@@ -1,7 +1,10 @@
 import Link from "next/link";
 import type { Team } from "@/lib/types";
+import { teamGithubBackedCount } from "@/lib/teams";
 
 export function TeamCard({ team }: { team: Team }) {
+  const githubBacked = teamGithubBackedCount(team);
+
   return (
     <Link
       href={`/teams/${team.id}`}
@@ -47,6 +50,15 @@ export function TeamCard({ team }: { team: Team }) {
         </span>
         <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>
           {team.member_ids.length} agents · {team.tasks_completed.toLocaleString()} tasks
+        </span>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", flexWrap: "wrap" }}>
+        <span style={{ fontSize: "0.6875rem", color: "var(--text-dim)", fontFamily: "monospace" }}>
+          {githubBacked}/{team.member_ids.length} GitHub-backed specialists
+        </span>
+        <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>
+          live routing receipts
         </span>
       </div>
 

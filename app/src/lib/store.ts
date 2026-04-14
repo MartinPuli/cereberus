@@ -43,3 +43,12 @@ export function saveRun(run: OrchestrationRun): OrchestrationRun {
 export function getRun(id: string): OrchestrationRun | undefined {
   return getStore().runs.get(id);
 }
+
+export function listRuns(limit = 6): OrchestrationRun[] {
+  return Array.from(getStore().runs.values())
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    )
+    .slice(0, limit);
+}

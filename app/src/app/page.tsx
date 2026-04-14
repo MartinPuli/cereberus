@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { AgentCard } from "@/components/AgentCard";
+import { RecentRunsPanel } from "@/components/RecentRunsPanel";
 import { TeamCard } from "@/components/TeamCard";
+import { TeamNavigator } from "@/components/TeamNavigator";
 import { ensureSeeded } from "@/lib/seed";
-import { listAgents } from "@/lib/store";
+import { listAgents, listRuns } from "@/lib/store";
 import { listTeams } from "@/lib/teams";
 
 export const dynamic = "force-dynamic";
@@ -11,6 +13,7 @@ export default function MarketplacePage() {
   ensureSeeded();
   const teams  = listTeams();
   const agents = listAgents();
+  const runs = listRuns();
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
@@ -41,11 +44,37 @@ export default function MarketplacePage() {
         </h1>
 
         <p style={{ color: "var(--text-dim)", maxWidth: "600px", lineHeight: 1.6, fontSize: "0.9375rem", margin: 0 }}>
-          Gnomos is a compute-routed marketplace. The primary unit you rent is a team:
+          Nomos is a compute-routed marketplace. The primary unit you rent is a team:
           a curated squad of specialist agents with a shared mission. Give a team a goal and its
           internal orchestrator decomposes the work, classifies each subtask, and routes it to the
           cheapest Claude model that can still do it well.
         </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4" style={{ marginTop: "8px" }}>
+          {[
+            {
+              label: "What you rent",
+              value: `${teams.length} curated teams`,
+              detail: "Outcome-oriented squads instead of raw agent browsing.",
+            },
+            {
+              label: "What Nomos shows",
+              value: "Routing receipts",
+              detail: "Each run makes decomposition, assignment, and savings visible.",
+            },
+            {
+              label: "Why it matters",
+              value: "Cheaper than all-Opus",
+              detail: "Model choice stays explicit instead of hidden behind one black box.",
+            },
+          ].map((item) => (
+            <div key={item.label} className="card" style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "6px" }}>
+              <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)" }}>{item.label}</div>
+              <div style={{ fontSize: "1rem", fontWeight: 650, color: "var(--text)" }}>{item.value}</div>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-dim)", lineHeight: 1.5 }}>{item.detail}</div>
+            </div>
+          ))}
+        </div>
 
         <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "4px" }}>
           <Link
@@ -73,6 +102,10 @@ export default function MarketplacePage() {
           </Link>
         </div>
       </header>
+
+      <TeamNavigator teams={teams} />
+
+      <RecentRunsPanel runs={runs} />
 
       {/* ── Teams ────────────────────────────────────── */}
       <section style={{ display: "flex", flexDirection: "column", gap: "16px" }}>

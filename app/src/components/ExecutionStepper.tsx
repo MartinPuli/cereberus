@@ -1,0 +1,121 @@
+import type { SubTask } from "@/lib/types";
+
+function countByStatus(subtasks: SubTask[]) {
+  return subtasks.reduce(
+    (acc, subtask) => {
+      acc[subtask.status] += 1;
+      return acc;
+    },
+    {
+      pending: 0,
+      classifying: 0,
+      routed: 0,
+      working: 0,
+      done: 0,
+      error: 0,
+    } as Record<SubTask["status"], number>,
+  );
+}
+
+export function ExecutionStepper({
+  subtasks,
+  running,
+  finished,
+}: {
+  subtasks: SubTask[];
+  running: boolean;
+  finished: boolean;
+}) {
+  const counts = countByStatus(subtasks);
+  const total = subtasks.length;
+  const hasTasks = total > 0;
+  const classified = counts.routed + counts.working + counts.done + counts.error;
+  const assigned = subtasks.filter((subtask) => subtask.agent_id).length;
+  const completed = counts.done + counts.error;
+
+  const stages = [
+    {
+      label: "Decompose",
+      detail: hasTasks ? `${total} tasks created` : "Waiting for a goal",
+      state: hasTasks ? "done" : "current",
+    },
+    {
+      label: "Classify",
+      detail: hasTasks ? `${classified}/${total} tasks classified` : "Complexity scoring pending",
+      state: !hasTasks ? "upcoming" : classified >= total ? "done" : running ? "current" : "upcoming",
+    },
+    {
+      label: "Assign",
+      detail: hasTasks ? `${assigned}/${total} specialists assigned` : "Team selection pending",
+      state: !hasTasks ? "upcoming" : assigned >= total ? "done" : classified > 0 ? "current" : "upcoming",
+    },
+    {
+      label: "Execute",
+      detail: hasTasks ? `${completed}/${total} tasks completed` : "Outputs will stream here",
+      state: !hasTasks ? "upcoming" : finished ? "done" : counts.working > 0 || completed > 0 ? "current" : "upcoming",
+    },
+  ] as const;
+
+  return (
+    <div className="card" style={{ padding: "18px", display: "flex", flexDirection: "column", gap: "14px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
+        <div>
+          <div style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)" }}>
+            Execution path
+          </div>
+          <div style={{ fontSize: "0.875rem", color: "var(--text-dim)", marginTop: "4px" }}>
+            Make the routing story visible: decomposition, classification, assignment, then execution.
+          </div>
+        </div>
+        {hasTasks && (
+          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontFamily: "monospace" }}>
+            done {counts.done} · working {counts.working} · errors {counts.error}
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        {stages.map((stage, index) => {
+          const active = stage.state === "current";
+          const done = stage.state === "done";
+          return (
+            <div
+              key={stage.label}
+              className="card"
+              style={{
+                padding: "14px",
+                borderColor: done || active ? "rgba(107,92,231,0.28)" : "var(--border)",
+                background: done || active ? "var(--accent-soft)" : "var(--bg-elev)",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", marginBottom: "8px" }}>
+                <span
+                  style={{
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "999px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                    fontFamily: "monospace",
+                    background: done ? "var(--accent)" : active ? "rgba(107,92,231,0.15)" : "var(--bg-elev2)",
+                    color: done ? "white" : active ? "var(--accent)" : "var(--text-muted)",
+                  }}
+                >
+                  {index + 1}
+                </span>
+                <span style={{ fontSize: "0.6875rem", color: done ? "var(--accent)" : active ? "var(--text)" : "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  {done ? "Done" : active ? "Live" : "Queued"}
+                </span>
+              </div>
+              <div style={{ fontWeight: 600, fontSize: "0.875rem", color: "var(--text)" }}>{stage.label}</div>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-dim)", marginTop: "6px", lineHeight: 1.5 }}>{stage.detail}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

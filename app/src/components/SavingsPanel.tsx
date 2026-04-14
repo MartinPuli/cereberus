@@ -97,7 +97,7 @@ export function SavingsPanel({
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "var(--text-dim)" }}>
                 <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--savings)", flexShrink: 0 }} />
-                Routed — Gnomos
+                Routed — Nomos
               </div>
               <span style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "var(--savings)", fontWeight: 600 }}>{fmt(actual)} ETH</span>
             </div>
@@ -115,7 +115,7 @@ export function SavingsPanel({
             fontSize: "0.75rem", color: "var(--accent)",
           }}
         >
-          At 10k tasks/day → saves{" "}
+          At 10k tasks/day, Nomos saves{" "}
           <span style={{ fontFamily: "monospace", fontWeight: 600 }}>
             ${((naive - actual) * 10000 * 3200).toFixed(0)}/day
           </span>

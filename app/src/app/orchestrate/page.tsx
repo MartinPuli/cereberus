@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { ExecutionStepper } from "@/components/ExecutionStepper";
 import { SavingsPanel } from "@/components/SavingsPanel";
 import { TaskRow } from "@/components/TaskRow";
 import { TeamHeader } from "@/components/TeamHeader";
@@ -44,6 +45,7 @@ interface ApiErrorResponse {
 function OrchestrateInner() {
   const params = useSearchParams();
   const teamId = params.get("team");
+  const goalParam = params.get("goal");
 
   const [goal, setGoal] = useState(DEFAULT_GOAL);
   const [subtasks, setSubtasks] = useState<SubTask[]>([]);
@@ -53,6 +55,12 @@ function OrchestrateInner() {
   const [finished, setFinished] = useState(false);
   const [totals, setTotals] = useState({ naive: 0, actual: 0, savedPct: 0 });
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (goalParam?.trim()) {
+      setGoal(goalParam);
+    }
+  }, [goalParam]);
 
   useEffect(() => {
     if (teamId) {
@@ -175,9 +183,11 @@ function OrchestrateInner() {
           </div>
         </div>
         <div className="text-xs text-[var(--text-dim)]">
-          Strongest live path: run a selected team and use the launch preset so Nomos shows Opus, Sonnet, and Haiku in one pass.
+          Strongest live path: run a selected team and use the launch preset so Nomos shows Haiku, Sonnet, and Opus in one pass.
         </div>
       </div>
+
+      <ExecutionStepper subtasks={subtasks} running={running} finished={finished} />
 
       {team && (
         <div
@@ -187,7 +197,7 @@ function OrchestrateInner() {
           <div style={{ fontSize: "1.5rem", lineHeight: 1, flexShrink: 0 }}>{team.cover_emoji}</div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)", marginBottom: "2px" }}>
-              Team rented
+              Team selected
             </div>
             <div style={{ fontWeight: 600, fontSize: "0.9375rem", color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {team.name}
@@ -231,7 +241,7 @@ function OrchestrateInner() {
               opacity: (running || !goal.trim()) ? 0.4 : 1,
             }}
           >
-            {running ? "Routing…" : team ? `Dispatch ${team.name}` : "Run orchestrator"}
+            {running ? "Routing…" : team ? `Run ${team.name}` : "Run orchestrator"}
           </button>
           {error && <div style={{ fontSize: "0.875rem", color: "#DC2626" }}>{error}</div>}
         </div>

@@ -39,7 +39,7 @@ export function Nav() {
             <circle cx="10" cy="15.5" r="1.5" fill="#6B5CE7" fillOpacity="0.5" />
           </svg>
           <span style={{ fontWeight: 600, fontSize: "0.875rem", color: "var(--text)", letterSpacing: "-0.01em" }}>
-            Gnomos
+            Nomos
           </span>
         </Link>
 

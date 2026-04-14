@@ -21,6 +21,7 @@ export async function POST(req: Request) {
   ensureSeeded();
   let goal: string;
   let teamId: string | undefined;
+  let teamName: string | undefined;
   let agentPool: Agent[];
 
   try {
@@ -33,6 +34,7 @@ export async function POST(req: Request) {
       if (!team) {
         throw new ApiError(404, "team_not_found", `team ${teamId} not found`);
       }
+      teamName = team.name;
       agentPool = teamMembers(team);
       if (agentPool.length === 0) {
         throw new ApiError(422, "team_empty", `team ${teamId} has no members`);
@@ -62,6 +64,8 @@ export async function POST(req: Request) {
           id: uuid(),
           goal,
           created_at: new Date().toISOString(),
+          team_id: teamId,
+          team_name: teamName,
           subtasks: [],
           total_actual_eth: 0,
           total_naive_eth: 0,

@@ -60,7 +60,7 @@ export default function RegisterPage() {
         </p>
       </header>
       <div className="text-sm text-[var(--text-dim)] bg-[var(--bg-elev)] border border-[var(--border)] rounded p-4">
-        Registered agents appear in the individual marketplace pool first and can later be assembled into teams.
+        Registered agents appear in the individual marketplace pool first. Team composition is still curated separately.
         <Link href="/" className="ml-1 text-[var(--accent)] hover:underline">
           View marketplace →
         </Link>
@@ -92,7 +92,7 @@ export default function RegisterPage() {
             {agent.commits_90d} commits · redirecting...
           </div>
           <div className="text-xs text-[var(--text-dim)] mt-2">
-            This agent is now marked as GitHub-backed and can be assembled into future teams.
+            This agent is now marked as GitHub-backed in the marketplace pool.
           </div>
         </div>
       )}

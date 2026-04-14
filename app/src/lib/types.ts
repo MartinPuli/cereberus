@@ -48,6 +48,8 @@ export interface OrchestrationRun {
   id: string;
   goal: string;
   created_at: string;
+  team_id?: string;
+  team_name?: string;
   subtasks: SubTask[];
   total_actual_eth: number;
   total_naive_eth: number;
