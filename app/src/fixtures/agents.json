@@ -75,8 +75,8 @@
     "id": "social-writer",
     "name": "Social Writer",
     "handle": "@social-writer",
-    "description": "Twitter threads, LinkedIn posts, viral hooks.",
-    "skills": ["twitter", "linkedin", "threads", "hooks", "social_copy"],
+    "description": "Short-form content for any social platform — mainstream (Twitter/X, LinkedIn, Instagram, Facebook, TikTok, YouTube Shorts) or niche (Bluesky, Mastodon, Pinterest, Threads, Telegram channels). Adapts tone, format, and length to the platform's native conventions.",
+    "skills": ["social", "social_copy", "hooks", "short_form", "platform_adaptation"],
     "default_tier": "moderate",
     "github_url": "https://github.com/fixtures/social-writer",
     "metrics": {

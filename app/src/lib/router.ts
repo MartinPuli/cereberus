@@ -24,7 +24,7 @@ export function selectAgent(
     const tierMatch = a.default_tier === tier ? 2 : 0;
     const skillMatch = hintLower
       ? a.skills.reduce(
-          (n, s) => n + (hintLower.includes(s.replace(/_/g, " ")) ? 1 : 0),
+          (n, s) => n + (s.split("_").some((w) => hintLower.includes(w)) ? 1 : 0),
           0,
         )
       : 0;

@@ -15,7 +15,7 @@ function buildSubagentSystem(agent: Agent, tier: string): string {
   return `You are ${agent.name} (${agent.handle}). ${agent.description}
 
 Your skills: ${agent.skills.join(", ")}.
-You are operating at the "${tier}" complexity tier. Be concise, direct, and stay strictly within your skill boundary. Produce exactly one deliverable — no preamble, no meta-commentary. Target length: short to medium.`;
+You are operating at the "${tier}" complexity tier. Be concise, direct, and lead with your core specialty. Produce exactly one deliverable — no preamble, no meta-commentary. Target length: short to medium.`;
 }
 
 export interface ExecutionResult {

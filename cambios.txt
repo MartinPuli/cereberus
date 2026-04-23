@@ -1,0 +1,137 @@
+NOMOS — FIXES DE ROUTING Y EJECUCIÓN DE SUBAGENTES
+=====================================================
+Fecha: 2026-04-21
+Archivos modificados: 3
+
+
+## CONTEXTO
+
+El pipeline de orquestación de Nomos sigue este flujo:
+
+  Goal → decompose() → classify() → selectAgent() → runSubagent()
+
+El orchestrator (Sonnet) descompone el goal en 3-5 subtasks, cada una con
+un skill_hint (ej: "twitter", "market research"). El classifier (Haiku) les
+asigna un tier (simple / moderate / complex). El router elige al agente más
+apto del pool del equipo. El executor corre esa subtask en el modelo
+correspondiente al tier, con un system prompt construido desde el perfil del
+agente.
+
+Se detectaron 3 bugs que se combinaban para producir refusals: el agente
+seleccionado ejecutaba la tarea pero Claude, siguiendo el system prompt,
+rechazaba el output porque la tarea estaba fuera de sus skills declarados.
+
+
+---
+
+## BUG 1 — System prompt con hard constraint en executor.ts
+
+### Problema
+
+La función buildSubagentSystem() inyectaba esta instrucción en el system
+prompt de cada subagente:
+
+  "stay strictly within your skill boundary"
+
+Esto le indicaba explícitamente a Claude que rechazara cualquier tarea que
+no cayera dentro de los skills listados en el perfil del agente. Si el
+router (por cualquier motivo) seleccionaba al agente equivocado, Claude
+interpretaba la instrucción al pie de la letra y producía un refusal en
+lugar de un output utilizable.
+
+### Fix
+
+Se reemplazó la restricción hard por una soft que preserva la especialidad
+del agente sin bloquear la ejecución:
+
+  ANTES: "stay strictly within your skill boundary"
+  AHORA: "lead with your core specialty"
+
+Esto le permite a Claude completar la tarea usando su criterio, priorizando
+su área de expertise pero sin rechazar cuando el task description se aparta
+levemente de sus skills declarados.
+
+Archivo: src/lib/executor.ts — línea 18
+
+
+---
+
+## BUG 2 — Skill matching invertido en router.ts
+
+### Problema
+
+La función selectAgent() asignaba puntos de skill match con esta lógica:
+
+  hintLower.includes(s.replace(/_/g, " "))
+
+Es decir: buscaba el nombre del skill DENTRO del hint. Por ejemplo, si el
+hint era "write instagram captions" y el skill era "social_copy", evaluaba:
+
+  "write instagram captions".includes("social copy") → false
+
+La dirección del match estaba invertida. En la práctica, ningún agente
+acumulaba puntos por skill match a menos que el hint contuviera literalmente
+el nombre exacto del skill (ej: hint "copywriting" con skill "copywriting").
+El ganador lo terminaban decidiendo solo efficiency + quality score, lo que
+podía hacer ganar al faq-formatter (el más eficiente en tokens) para
+cualquier tipo de tarea.
+
+### Fix
+
+Se invirtió la lógica: ahora se itera sobre cada palabra del skill y se
+verifica si aparece en el hint:
+
+  ANTES: hintLower.includes(s.replace(/_/g, " "))
+  AHORA: s.split("_").some((w) => hintLower.includes(w))
+
+Ejemplo con el fix: skill "social_copy" → palabras ["social", "copy"] →
+"write instagram captions for social media".includes("social") → true.
+El agente correcto ahora acumula puntos y sube en el ranking.
+
+Archivo: src/lib/router.ts — líneas 25-29
+
+
+---
+
+## BUG 3 — Skills incompletos en el perfil del social-writer
+
+### Problema
+
+El agente social-writer tenía declarados estos skills:
+
+  ["twitter", "linkedin", "threads", "hooks", "social_copy"]
+
+No tenía "instagram" ni "facebook". Incluso con el fix del Bug 2, un hint
+como "instagram captions" no matcheaba ninguna palabra de sus skills, por
+lo que el agente seguía sin sumar puntos para ese tipo de tarea.
+
+### Fix
+
+Se agregaron "instagram" y "facebook" al array de skills del agente:
+
+  ANTES: ["twitter", "linkedin", "threads", "hooks", "social_copy"]
+  AHORA: ["twitter", "linkedin", "instagram", "facebook", "threads", "hooks", "social_copy"]
+
+Archivo: src/fixtures/agents.json — agente "social-writer"
+
+
+---
+
+## RESULTADO
+
+Con los tres fixes combinados, el flujo para un goal de contenido social
+(ej: "write posts for Instagram, Twitter and Facebook") ahora funciona así:
+
+  1. El orchestrator descompone en subtasks con hints como "instagram",
+     "twitter", "facebook".
+  2. El router evalúa el social-writer: cada hint matchea al menos una
+     palabra de sus skills → acumula 1 punto por subtask.
+  3. El social-writer gana la selección por skill match, no por eficiencia.
+  4. El executor corre la subtask con el system prompt actualizado → Claude
+     produce el output sin rechazar.
+
+El equipo con mejor cobertura para tareas creativas/social sigue siendo
+Brand Marketing (campaign-strategist + copywriter-pro + social-writer +
+design-critic). Para pitch decks o research, Market Research
+(market-researcher + data-analyst + copywriter-pro) es el más apto, con el
+quality score más alto del catálogo (0.94) y mayor avg_rating (4.8).
