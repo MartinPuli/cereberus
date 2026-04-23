@@ -13,13 +13,21 @@ import { CLASSIFIER_MODEL, parseForceRouting } from "./config";
 import { ApiError, requireTrimmedString } from "./http";
 import type { Classification, Tier } from "./types";
 
-const SYSTEM_PROMPT = `You are a task complexity classifier. Given a subtask description, output JSON only:
+const SYSTEM_PROMPT = `You are a task complexity classifier. Given a subtask description and an optional skill_hint, output JSON only:
 {"tier": "simple" | "moderate" | "complex", "reason": "one sentence", "estimated_tokens": <integer>}
 
-Rules:
-- simple: formatting, extraction, translation, yes/no decisions (<500 tokens)
-- moderate: writing, summarization, code generation, analysis (500-2000 tokens)
-- complex: multi-step reasoning, architecture, strategy, evaluation (>2000 tokens)
+Tier is determined by TASK TYPE, not topic complexity. A checklist is simple even across 10 jurisdictions.
+
+Rules by task type:
+- simple: formatting, structuring, checklists, extraction, translation, yes/no decisions (<500 tokens)
+- moderate: drafting, writing, summarization, compliance review, code generation, single-domain analysis (500-2000 tokens)
+- complex: multi-step reasoning across multiple domains, architecture design, cross-jurisdictional strategy, evaluation of competing scenarios (>2000 tokens)
+
+If a skill_hint is provided, use it as a strong prior:
+- "formatting", "summarization", "translation", "extraction" → simple
+- "drafting", "writing", "compliance", "analysis" → moderate
+- "research", "strategy", "architecture", "evaluation" → complex
+The skill_hint overrides surface-level topic words like "multi-jurisdictional" or "complex".
 
 Output VALID JSON only, no prose, no code fences.`;
 
@@ -41,16 +49,19 @@ function applyForceRouting(description: string, base: Classification): Classific
   return base;
 }
 
-export async function classify(description: string): Promise<Classification> {
+export async function classify(description: string, skillHint?: string): Promise<Classification> {
   const normalizedDescription = requireTrimmedString(description, "description", {
     maxLength: 2000,
   });
   const client = getAnthropic();
+  const userContent = skillHint
+    ? `skill_hint: ${skillHint}\nSubtask: ${normalizedDescription}`
+    : `Subtask: ${normalizedDescription}`;
   const res = await client.messages.create({
     model: CLASSIFIER_MODEL,
     max_tokens: 256,
     system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: `Subtask: ${normalizedDescription}` }],
+    messages: [{ role: "user", content: userContent }],
   });
   const raw = res.content
     .filter((c): c is Anthropic.TextBlock => c.type === "text")

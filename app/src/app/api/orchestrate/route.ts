@@ -90,7 +90,7 @@ export async function POST(req: Request) {
 
         for (let i = 0; i < subtasks.length; i++) {
           const st = subtasks[i];
-          const classification = await classify(st.description);
+          const classification = await classify(st.description, decomposed[i].skill_hint);
           st.classification = classification;
           st.tier = classification.tier;
           st.model = tierToModel(classification.tier);

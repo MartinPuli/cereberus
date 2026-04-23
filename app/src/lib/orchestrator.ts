@@ -16,7 +16,14 @@ interface DecomposedSubtask {
   skill_hint: string;
 }
 
-const ORCHESTRATOR_SYSTEM = `You are an orchestrator. Given a product/work goal, decompose it into 3 to 5 well-scoped subtasks that can each be delegated to a specialized agent. Subtasks must be independent, produce distinct outputs, and span different complexity levels when possible (simple formatting, moderate writing, complex strategy).
+const ORCHESTRATOR_SYSTEM = `You are an orchestrator. Given a product/work goal, decompose it into 3 to 5 well-scoped subtasks that can each be delegated to a specialized agent.
+
+Complexity rules — you MUST follow these:
+- You MUST produce subtasks at different complexity levels. Never assign the same complexity to every subtask.
+- Every decomposition MUST include at least one simple subtask (formatting, structuring, organizing, summarizing finished content). Even for complex goals, there is always a formatting or structuring step.
+- Separate ANALYSIS from FORMATTING: "Draft the full document" is complex. "Format the draft into a clean structured template" or "Create an executive checklist from the completed sections" is simple.
+- Reserve complex only for genuine multi-step reasoning (research, legal analysis, architecture). Writing from a clear brief is moderate. Structuring, formatting, and extracting is simple.
+- Skill hints must be specific to the subtask type: "research", "drafting", "compliance", "formatting", "summarization", "translation", "analysis".
 
 You MUST call the "submit_subtasks" tool exactly once with your decomposition. Do not reply with prose.`;
 
