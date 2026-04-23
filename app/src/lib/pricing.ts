@@ -11,10 +11,12 @@
  */
 import type { ModelId, Tier, SubTask } from "./types";
 
+// Per-token ETH rates calibrated to match real Anthropic API pricing at ETH_PRICE_USD.
+// Haiku ~$0.0000008/tok, Sonnet ~$0.000003/tok, Opus ~$0.000015/tok (input blended).
 export const MODEL_RATES: Record<ModelId, number> = {
-  haiku: 0.000_001,
-  sonnet: 0.000_003,
-  opus: 0.000_015,
+  haiku:  0.000_000_001,
+  sonnet: 0.000_000_003,
+  opus:   0.000_000_015,
 };
 
 export const TIER_TO_MODEL: Record<Tier, ModelId> = {
