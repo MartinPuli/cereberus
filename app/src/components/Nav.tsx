@@ -38,7 +38,7 @@ export function Nav() {
         >
           <Image src="/nomos-logo.svg" alt="Nomos" width={30} height={30} priority />
           <span
-            className="font-display"
+            className="font-nomos"
             style={{ fontSize: "1.25rem", color: "var(--text)", lineHeight: 1, letterSpacing: "0.01em" }}
           >
             nomos

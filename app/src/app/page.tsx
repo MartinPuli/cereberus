@@ -163,7 +163,7 @@ export default function MarketplacePage() {
               (
             </span>
             <h1
-              className="nomos-drop font-display"
+              className="nomos-drop font-nomos"
               style={{
                 fontSize: "clamp(4rem, 16vw, 12rem)",
                 color: "var(--ink)",

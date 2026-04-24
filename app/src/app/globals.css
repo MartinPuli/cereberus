@@ -142,6 +142,7 @@ html, body {
 /* ─── Typography helpers ─────────────────────────── */
 .font-display { font-family: "Gordon Rounded", "Space Grotesk", "DM Sans", sans-serif; font-weight: 400; }
 .font-mono    { font-family: "JetBrains Mono", ui-monospace, monospace; }
+.font-nomos   { font-family: "Modak", sans-serif; }
 
 /* ─── Animations ─────────────────────────────────── */
 
