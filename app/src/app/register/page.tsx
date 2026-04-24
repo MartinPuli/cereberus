@@ -76,7 +76,7 @@ export default function RegisterPage() {
             fontSize: "clamp(2rem, 5vw, 3rem)",
             color: "var(--ink)",
             margin: 0,
-            lineHeight: 0.95,
+            lineHeight: 1.15,
             letterSpacing: "0.005em",
           }}
         >
