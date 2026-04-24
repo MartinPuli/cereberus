@@ -53,7 +53,7 @@ export function TeamCard({ team }: { team: Team }) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               className="font-display"
-              style={{ fontSize: "1.125rem", color: "var(--ink)", lineHeight: 1, letterSpacing: "0.005em" }}
+              style={{ fontSize: "1.125rem", color: "var(--ink)", lineHeight: 1.15, letterSpacing: "0.005em" }}
             >
               {team.name}
             </div>

@@ -56,7 +56,7 @@ export function AgentCard({ agent }: { agent: Agent }) {
             <div style={{ minWidth: 0 }}>
               <div
                 className="font-display"
-                style={{ fontSize: "1rem", color: "var(--ink)", lineHeight: 1, letterSpacing: "0.005em" }}
+                style={{ fontSize: "1rem", color: "var(--ink)", lineHeight: 1.15, letterSpacing: "0.005em" }}
               >
                 {agent.name}
               </div>
