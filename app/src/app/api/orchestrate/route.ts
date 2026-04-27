@@ -32,7 +32,8 @@ export async function POST(req: Request) {
     if (teamId) {
       const team = getTeam(teamId);
       if (!team) {
-        throw new ApiError(404, "team_not_found", `team ${teamId} not found`);
+        // 422 instead of 404 so the API response isn't mistaken for a missing route
+        throw new ApiError(422, "team_not_found", `team ${teamId} not found`);
       }
       teamName = team.name;
       agentPool = teamMembers(team);

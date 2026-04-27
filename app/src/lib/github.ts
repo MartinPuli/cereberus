@@ -71,8 +71,9 @@ async function commitsLast90d(owner: string, repo: string): Promise<number> {
   const r = await gh(
     `/repos/${owner}/${repo}/commits?since=${encodeURIComponent(since)}&per_page=100`,
   );
+  // 422 instead of 404 so the API response isn't mistaken for a missing route
   if (r.status === 404) {
-    throw new ApiError(404, "repo_not_found", `GitHub repository ${owner}/${repo} was not found`);
+    throw new ApiError(422, "repo_not_found", `GitHub repository ${owner}/${repo} was not found`);
   }
   if (r.status === 403 || r.status === 429) {
     throw new ApiError(
