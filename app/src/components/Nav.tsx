@@ -1,20 +1,12 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { WalletButton } from "./WalletButton";
+import { NavLinks } from "./NavLinks";
+import { AuthDropdown } from "./AuthDropdown";
+import { getCurrentUser } from "@/lib/auth";
 
-const LINKS = [
-  { href: "/",            label: "Marketplace" },
-  { href: "/orchestrate", label: "Run a team"   },
-  { href: "/register",    label: "Add agent"    },
-  { href: "/inbox",       label: "Inbox"        },
-  { href: "/assets",      label: "Assets"       },
-];
+export async function Nav() {
+  const user = await getCurrentUser();
 
-export function Nav() {
-  const path = usePathname();
   return (
     <nav
       style={{
@@ -34,50 +26,66 @@ export function Nav() {
         {/* Wordmark */}
         <Link
           href="/"
-          style={{ display: "flex", alignItems: "center", gap: "9px", flexShrink: 0, textDecoration: "none" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "9px",
+            flexShrink: 0,
+            textDecoration: "none",
+          }}
         >
           <Image src="/nomos-logo.svg" alt="Nomos" width={30} height={30} priority />
           <span
             className="font-nomos"
-            style={{ fontSize: "1.25rem", color: "var(--text)", lineHeight: 1, letterSpacing: "0.01em" }}
+            style={{
+              fontSize: "1.25rem",
+              color: "var(--text)",
+              lineHeight: 1,
+              letterSpacing: "0.01em",
+            }}
           >
             nomos
           </span>
         </Link>
 
         {/* Divider */}
-        <div style={{ width: "1px", height: "18px", background: "var(--border)", flexShrink: 0 }} />
+        <div
+          style={{
+            width: "1px",
+            height: "18px",
+            background: "var(--border)",
+            flexShrink: 0,
+          }}
+        />
 
-        {/* Links */}
-        <div style={{ display: "flex", gap: "2px", flex: 1 }}>
-          {LINKS.map(({ href, label }) => {
-            const active = path === href;
-            return (
-              <Link
-                key={href}
-                href={href}
-                style={{
-                  padding: "5px 11px",
-                  borderRadius: "8px",
-                  fontSize: "0.875rem",
-                  textDecoration: "none",
-                  color: active ? "var(--text)" : "var(--text-dim)",
-                  background: active ? "var(--bg-elev2)" : "transparent",
-                  fontWeight: active ? 500 : 400,
-                  transition: "color 0.12s, background 0.12s",
-                  letterSpacing: "-0.005em",
-                }}
-                onMouseEnter={(e) => { if (!active) (e.currentTarget as HTMLElement).style.color = "var(--text)"; }}
-                onMouseLeave={(e) => { if (!active) (e.currentTarget as HTMLElement).style.color = "var(--text-dim)"; }}
-              >
-                {label}
-              </Link>
-            );
-          })}
-        </div>
+        {/* Links — client component for active-link highlighting */}
+        <NavLinks />
 
-        {/* Wallet */}
-        <WalletButton />
+        {/* Auth */}
+        {user ? (
+          <AuthDropdown user={user} />
+        ) : (
+          <Link
+            href="/auth/login"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              padding: "5px 14px",
+              borderRadius: "999px",
+              background: "var(--accent)",
+              border: "1px solid transparent",
+              fontSize: "0.6875rem",
+              fontFamily: "JetBrains Mono, monospace",
+              color: "white",
+              flexShrink: 0,
+              letterSpacing: "0.02em",
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+          >
+            Sign in
+          </Link>
+        )}
       </div>
     </nav>
   );
